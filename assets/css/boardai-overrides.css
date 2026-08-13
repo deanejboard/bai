@@ -1,9 +1,24 @@
 /* ==========================================================================
-   BoardAI.com — prototype theme layer
-   Sits on top of Bootstrap 5.1.0 (same major/minor as board.com's WP theme).
-   Tokens mirror the Figma variables in "Board AI.com FINAL" and the compiled
-   board.com theme.min.css, so this layer can be dropped into the real theme
-   with the custom properties swapped for the theme's own Sass variables.
+   BoardAI.com — override layer
+   ==========================================================================
+   Loads AFTER board.com's compiled theme.min.css and is the ONLY file this
+   prototype adds. The theme is used verbatim and never edited, so everything
+   here is what a developer would need to merge into the real theme.
+
+   The theme already provides Bootstrap 5.1.0, the Mulish body/heading stack,
+   the .container ramp, .block--spc section rhythm and .btn-board buttons.
+   Where a rule below duplicates something the theme already does, it is
+   marked DUPLICATES-THEME and can be deleted in favour of the theme's own
+   class when this is productionised.
+
+   Two things about the theme worth knowing when reading this file:
+     * it sets --bs-link-color-rgb / --bs-link-hover-color-rgb to 20,34,69,
+       so an unhandled <a> hover resolves to #142245 navy, not Bootstrap blue;
+     * it styles h1–h6 (weight 500 + margins), so the .bai-* type classes here
+       deliberately restate weight and margin.
+
+   Tokens mirror the Figma variables in "Board AI.com FINAL"; swap them for the
+   theme's own Sass variables on the way in.
    ========================================================================== */
 
 /* --------------------------------------------------------------------------
@@ -102,7 +117,10 @@
 
 /* --------------------------------------------------------------------------
    2. Base + typography
-   Scale follows board.com's clamp()-based .visual-h* ramp.
+   DUPLICATES-THEME: the ramp mirrors the theme's clamp()-based .visual-h*
+   classes. Swap .bai-display/.bai-h2/.bai-h4 for .visual-h1/.visual-h2/
+   .visual-h4 in production; they are restated here only to pin the exact
+   Figma sizes and to reset the theme's h1-h6 weight (500) and margins.
    -------------------------------------------------------------------------- */
 html { scroll-behavior: smooth; }
 
@@ -119,15 +137,15 @@ body {
 
 h1, h2, h3, h4, h5, h6 { margin: 0; font-weight: 700; }
 p { margin: 0; }
-/* Bootstrap's reboot sets a:hover{color:#0a58ca}, which outranks a plain class
-   on the element (0,1,1 vs 0,1,0). That turned the masked board wordmark — and
-   any nav link — Bootstrap blue on hover. Neutralise it here; components that
-   want a real hover colour set their own and win on specificity. */
+/* The theme styles links as underlined #142245 — it sets --bs-link-color-rgb
+   and --bs-link-hover-color-rgb to 20,34,69 — through `a` and `a:hover`. Most
+   links on this page sit white-on-dark, so both need neutralising. */
 a { color: inherit; text-decoration: none; }
-/* Scoped to UNCLASSED links only. A blanket a:hover (0,1,1) outranks a single
-   component class (0,1,0), so it would resolve `inherit` to the body colour and
-   turn white-on-dark links navy. Component links set their own hover colour
-   below, each at >= 2 classes so Bootstrap's a:hover can't win. */
+/* Scoped to UNCLASSED links only, deliberately. A blanket a:hover (0,1,1)
+   outranks a single component class (0,1,0), so it would resolve `inherit` to
+   the body colour and turn every white-on-dark link navy — invisible against
+   the header and drawer. Component links each set their own hover colour below
+   at >= 2 classes, which is what beats the theme's a:hover. */
 a:not([class]):hover { color: inherit; }
 img, svg { max-width: 100%; }
 
@@ -191,7 +209,8 @@ img, svg { max-width: 100%; }
   padding-inline: var(--bai-gutter);
 }
 
-/* Section rhythm — mirrors board.com's .block--spc ramp */
+/* Section rhythm. DUPLICATES-THEME: the theme's own .block--spc already does
+   1.5 / 2.625 / 3.75rem — use that class instead when productionising. */
 .bai-block { position: relative; padding-block: 1.5rem; }
 
 @media (min-width: 768px) {
@@ -206,7 +225,9 @@ img, svg { max-width: 100%; }
 }
 
 /* --------------------------------------------------------------------------
-   4. Buttons — board.com's .btn-board geometry (pill, 8/24, 16/24 w700)
+   4. Buttons. DUPLICATES-THEME: geometry copied from the theme's .btn-board
+   (pill, 8/24, 16/24 w700). Prefer .btn.btn-board on the way in; these exist
+   so the prototype reads standalone.
    -------------------------------------------------------------------------- */
 .bai-btn {
   display: inline-flex;
