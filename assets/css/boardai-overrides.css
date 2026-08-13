@@ -1039,3 +1039,555 @@ html.bai-motion .bai-feature[data-reveal-item] { --bai-reveal-y: 24px; }
   *, *::before, *::after { transition-duration: .01ms !important; animation-duration: .01ms !important; }
   [data-reveal-item] { opacity: 1 !important; transform: none !important; }
 }
+
+/* ==========================================================================
+   14. Our Thinking — shared inner-page chrome
+   ==========================================================================
+   Naming follows board.com's own theme vocabulary wherever it already has a
+   class for the job (.board-hero, .hero-details, .background-shape,
+   .breadcrumbs, .grid--3), so these blocks drop into the WP theme with the
+   prototype styling stripped rather than renamed.
+   ========================================================================== */
+
+/* --- short dark hero used by landing / archive / author ------------------- */
+.bai-hero--sm {
+  padding-top: 120px;
+  padding-bottom: 3.5rem;
+}
+.bai-hero--sm .bai-hero__inner { max-width: 779px; margin-inline: 0; text-align: left; }
+
+/* --- breadcrumbs (theme: .breadcrumbs / .breadcrumb-separator) ------------ */
+.bai-breadcrumbs {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: .5rem;
+  margin: 0 0 1.5rem;
+  padding: 0;
+  list-style: none;
+  font-size: 1rem;
+  line-height: 1.5rem;
+  font-weight: 300;
+  color: rgba(255, 255, 255, .8);
+}
+.bai-breadcrumbs a { transition: opacity .25s var(--bai-ease); }
+.bai-breadcrumbs a:hover { color: #fff; opacity: var(--bai-hover-fade); }
+.bai-breadcrumbs li { display: inline-flex; align-items: center; gap: .5rem; }
+.bai-breadcrumbs svg { opacity: .6; }
+.bai-breadcrumbs [aria-current] { color: #fff; }
+
+/* --- search + topic filter (presentational) ------------------------------- */
+.bai-filters {
+  display: flex;
+  align-items: center;
+  gap: var(--bai-space-3);
+}
+/* archive: search only, narrower and centred (Figma x=280 w=880) */
+.bai-filters--centred { max-width: 880px; margin-inline: auto; }
+
+.bai-search {
+  position: relative;
+  flex: 1 1 auto;
+  min-width: 0;
+}
+.bai-search input {
+  width: 100%;
+  height: 46px;
+  padding: 0 60px 0 1.5rem;
+  font-family: inherit;
+  font-size: 1rem;
+  font-weight: 300;
+  color: var(--bai-primary);
+  background: #fff;
+  border: 1px solid var(--bai-neutral-200);
+  border-radius: var(--bai-radius-pill);
+}
+.bai-search input::placeholder { color: var(--bai-neutral-400); }
+.bai-search input:focus { outline: 2px solid var(--bai-light-blue); outline-offset: 1px; }
+.bai-search button {
+  position: absolute;
+  top: 50%;
+  right: 4px;
+  transform: translateY(-50%);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 38px;
+  height: 38px;
+  color: #fff;
+  background: var(--bai-blue);
+  border: 0;
+  border-radius: 50%;
+  cursor: pointer;
+  transition: background-color .2s var(--bai-ease);
+}
+.bai-search button:hover { background: var(--bai-violet); }
+/* The theme pads buttons 8px 24px. On a 38px round icon button with
+   box-sizing:border-box that leaves a content box 0px wide, and the global
+   `svg { max-width: 100% }` above then clamps the icon to nothing. Beat the
+   padding, and stop icons being clamped by their container at all. */
+.bai-search button[type="submit"] { padding: 0; }
+.bai-search button svg { width: 20px; height: 20px; max-width: none; }
+.bai-search button svg,
+.bai-filter svg,
+.bai-accordion__btn svg,
+.bai-share svg,
+.bai-pagination svg,
+.bai-breadcrumbs svg,
+.bai-author__link svg,
+.bai-checklist li svg { flex: none; }
+
+.bai-filter {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--bai-space-2);
+  height: 42px;
+  padding: 0 1.25rem;
+  font-family: inherit;
+  font-size: 1rem;
+  font-weight: 300;
+  color: var(--bai-primary);
+  white-space: nowrap;
+  background: #fff;
+  border: 1px solid var(--bai-neutral-200);
+  border-radius: var(--bai-radius-pill);
+  cursor: pointer;
+  transition: opacity .25s var(--bai-ease);
+}
+.bai-filter:hover { opacity: var(--bai-hover-fade); }
+.bai-filter__count {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 20px;
+  height: 20px;
+  padding: 0 5px;
+  font-size: .75rem;
+  font-weight: 700;
+  color: #fff;
+  background: var(--bai-blue);
+  border-radius: 999px;
+}
+
+/* --- pagination (presentational) ----------------------------------------- */
+.bai-pagination {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--bai-space-2);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  font-size: 1rem;
+  font-weight: 700;
+}
+.bai-pagination a,
+.bai-pagination span {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: .375rem;
+  min-width: 32px;
+  height: 32px;
+  padding: 0 .5rem;
+  border-radius: var(--bai-radius-sm);
+  color: var(--bai-primary);
+}
+.bai-pagination a { transition: opacity .25s var(--bai-ease); }
+.bai-pagination a:hover { opacity: var(--bai-hover-fade); }
+.bai-pagination .is-current {
+  border: 1px solid var(--bai-violet);
+  color: var(--bai-violet);
+}
+.bai-pagination .is-gap { font-weight: 300; color: var(--bai-neutral-400); }
+
+/* ==========================================================================
+   15. Our Thinking — article single
+   ========================================================================== */
+
+/* The three hero formats are one component plus a background layer, which is
+   how the theme already models it (.board-hero + .background-shape). */
+.bai-post-hero {
+  position: relative;
+  padding-top: 132px;
+  padding-bottom: 4rem;
+  color: #fff;
+  background: linear-gradient(253deg, #1a2c59 2.74%, #142245 98.93%);  /* theme's own hero gradient */
+  overflow: hidden;
+}
+.bai-post-hero__inner { position: relative; z-index: 2; max-width: 700px; }
+
+/* format 1 — background image, bleeding right behind a legibility scrim */
+.bai-post-hero--image .bai-post-hero__bg {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  background: url("../img/art-hero-billboard.jpg") center right / cover no-repeat;
+}
+.bai-post-hero--image .bai-post-hero__bg::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(90deg, #16244a 0%, rgba(22, 36, 74, .92) 38%, rgba(22, 36, 74, .55) 100%);
+}
+
+/* format 2 — soft overlapping shapes (theme: .background-shape) */
+.bai-post-hero--shape .bai-post-hero__bg {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  overflow: hidden;
+}
+.bai-post-hero--shape .bai-post-hero__bg span {
+  position: absolute;
+  border-radius: 50% 50% 46% 54% / 55% 48% 52% 45%;
+  filter: blur(.5px);
+}
+.bai-post-hero--shape .bai-post-hero__bg span:nth-child(1) {
+  right: -8%; bottom: -46%; width: 46%; padding-top: 46%;
+  background: linear-gradient(150deg, #4a3b96, #7b4fe0);
+  opacity: .85;
+}
+.bai-post-hero--shape .bai-post-hero__bg span:nth-child(2) {
+  right: -16%; bottom: -34%; width: 38%; padding-top: 38%;
+  background: linear-gradient(150deg, #3b3f8f, #8f5bf0);
+  opacity: .75;
+}
+.bai-post-hero--shape .bai-post-hero__bg span:nth-child(3) {
+  right: -24%; bottom: -20%; width: 30%; padding-top: 30%;
+  background: linear-gradient(150deg, #4a3b96, #9b6bff);
+  opacity: .6;
+}
+
+/* format 3 — gradient wash + the topographic texture from the home hero */
+.bai-post-hero--gradient {
+  background: linear-gradient(135deg, #6b32a6 0%, #45257a 32%, #2a2359 62%, #171e42 100%);
+}
+.bai-post-hero--gradient .bai-post-hero__bg {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  background: url("../img/hero-bg.jpg") left top / cover no-repeat;
+  opacity: .55;
+  mix-blend-mode: soft-light;
+}
+
+/* meta row — theme's .hero-details draws the 1px/68px rules between items */
+.bai-post-meta {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 1.5rem;
+  margin-bottom: var(--bai-space-4);
+  font-size: 1.125rem;
+  font-weight: 300;
+}
+.bai-post-meta > * { position: relative; }
+.bai-post-meta > * + *::before {
+  content: "";
+  position: absolute;
+  top: 50%;
+  left: -.75rem;
+  transform: translateY(-50%);
+  width: 1px;
+  height: 24px;
+  background: #5c6584;
+}
+.bai-post-meta .bai-eyebrow { font-size: .875rem; }
+
+.bai-post-hero__title { margin-bottom: var(--bai-space-4); }
+.bai-post-hero__standfirst { color: rgba(255, 255, 255, .82); }
+
+.bai-byline {
+  display: flex;
+  align-items: center;
+  gap: var(--bai-space-3);
+  margin-top: var(--bai-space-5);
+}
+.bai-byline img {
+  width: 56px;
+  height: 56px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 1px solid rgba(255, 255, 255, .25);
+}
+.bai-byline__name { font-size: 1.125rem; line-height: 1.5rem; }
+.bai-byline__role { font-size: 1rem; line-height: 1.5rem; font-weight: 300; color: rgba(255, 255, 255, .62); }
+
+/* --- article body: 760px measure + 268px sidebar (Figma x=182 / x=990) ---- */
+.bai-article {
+  display: grid;
+  grid-template-columns: minmax(0, 760px) 268px;
+  gap: 48px;
+  justify-content: center;
+}
+.bai-article__body { min-width: 0; }
+/* video posts have no sidebar — single centred column */
+.bai-article--single { grid-template-columns: minmax(0, 860px); }
+
+/* prose primitives */
+.bai-prose > * + * { margin-top: 1.5rem; }
+.bai-prose p {
+  font-size: 1rem;
+  line-height: 1.625rem;
+  font-weight: 300;
+  color: var(--bai-neutral-700);
+}
+.bai-prose h2 {
+  margin-top: 2.5rem;
+  font-size: 1.75rem;
+  line-height: 2.25rem;
+  font-weight: 700;
+  color: var(--bai-primary);
+}
+.bai-prose h3 {
+  margin-top: 2rem;
+  font-size: 1.25rem;
+  line-height: 1.75rem;
+  font-weight: 700;
+  color: var(--bai-primary);
+}
+.bai-prose strong { font-weight: 700; color: var(--bai-primary); }
+.bai-prose figure { margin: 2.5rem 0 0; }
+.bai-prose figure img { width: 100%; border-radius: var(--bai-radius); display: block; }
+.bai-prose figcaption {
+  margin-top: .75rem;
+  font-size: .875rem;
+  font-weight: 300;
+  color: var(--bai-neutral-400);
+}
+
+/* checkmark list */
+.bai-checklist { margin: 2rem 0 0; padding: 0; list-style: none; }
+.bai-checklist li {
+  position: relative;
+  padding-left: 2rem;
+  font-size: 1rem;
+  line-height: 1.625rem;
+  font-weight: 300;
+  color: var(--bai-neutral-700);
+}
+.bai-checklist li + li { margin-top: 1rem; }
+.bai-checklist li svg {
+  position: absolute;
+  top: .3rem;
+  left: 0;
+  width: 18px;
+  height: 18px;
+  color: var(--bai-blue);
+}
+
+/* tags */
+.bai-tags {
+  margin-top: 3rem;
+  padding-top: 1.5rem;
+  border-top: 1px solid var(--bai-neutral-50);
+}
+.bai-tags__label { margin-bottom: var(--bai-space-3); color: var(--bai-neutral-400); }
+.bai-tags__list { display: flex; flex-wrap: wrap; gap: var(--bai-space-2); margin: 0; padding: 0; list-style: none; }
+.bai-tags__list a {
+  display: inline-flex;
+  align-items: center;
+  height: 32px;
+  padding: 0 1rem;
+  font-size: .875rem;
+  font-weight: 700;
+  color: var(--bai-primary);
+  background: var(--bai-neutral-50);
+  border-radius: var(--bai-radius-pill);
+  transition: opacity .25s var(--bai-ease);
+}
+.bai-tags__list a:hover { opacity: var(--bai-hover-fade); }
+
+/* sidebar */
+.bai-aside {
+  align-self: start;
+  position: sticky;
+  top: calc(var(--bai-header-h) + 24px);
+  padding: var(--bai-space-4);
+  background: var(--bai-shade-50);
+  border-radius: var(--bai-radius-sm);
+}
+.bai-aside__title {
+  padding-bottom: .75rem;
+  margin-bottom: var(--bai-space-3);
+  font-size: 1rem;
+  font-weight: 700;
+  color: var(--bai-primary);
+  border-bottom: 1px solid var(--bai-neutral-200);
+}
+.bai-aside__list { margin: 0 0 var(--bai-space-5); padding: 0; list-style: none; }
+.bai-aside__list li + li { margin-top: .75rem; }
+.bai-aside__list a {
+  display: block;
+  font-size: .875rem;
+  line-height: 1.25rem;
+  font-weight: 300;
+  color: var(--bai-neutral-700);
+  transition: opacity .25s var(--bai-ease);
+}
+.bai-aside__list a:hover { opacity: var(--bai-hover-fade); }
+.bai-share { display: flex; gap: var(--bai-space-2); }
+.bai-share a {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 28px;
+  color: var(--bai-primary);
+  border: 1px solid var(--bai-neutral-200);
+  border-radius: 50%;
+  transition: background-color .2s var(--bai-ease), color .2s var(--bai-ease);
+}
+.bai-share a:hover { background: var(--bai-primary); color: #fff; }
+
+/* ==========================================================================
+   16. Our Thinking — video post
+   ========================================================================== */
+/* The player straddles the hero/white boundary, so the hero keeps its dark
+   background only down to the fold line and the player sits on top. */
+.bai-video-hero { padding-bottom: 0; }
+.bai-video-hero .bai-post-hero__inner { max-width: 1000px; }
+.bai-video-stage { position: relative; z-index: 2; margin-top: var(--bai-space-5); }
+.bai-video-stage::after {
+  content: "";
+  position: absolute;
+  inset: 45% 0 -1px;
+  background: #fff;
+  z-index: -1;
+}
+.bai-video {
+  position: relative;
+  aspect-ratio: 16 / 9;
+  border-radius: var(--bai-radius);
+  overflow: hidden;
+  background: #0b1226;
+}
+.bai-video video, .bai-video img { width: 100%; height: 100%; object-fit: cover; display: block; }
+.bai-video__play {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 64px;
+  height: 64px;
+  padding: 0;
+  color: #fff;
+  background: rgba(255, 255, 255, .18);
+  border: 1px solid rgba(255, 255, 255, .5);
+  border-radius: 50%;
+  cursor: pointer;
+  backdrop-filter: blur(4px);
+  transition: background-color .2s var(--bai-ease), transform .2s var(--bai-ease);
+}
+.bai-video__play:hover { background: rgba(255, 255, 255, .3); }
+.bai-video__play svg { display: block; width: 26px; height: 26px; margin: 0 auto; }
+
+/* script accordion */
+.bai-accordion {
+  margin-top: var(--bai-space-4);
+  border: 1px solid var(--bai-neutral-200);
+  border-radius: var(--bai-radius-sm);
+  background: #fff;
+}
+.bai-accordion__btn {
+  display: flex;
+  align-items: center;
+  gap: var(--bai-space-3);
+  width: 100%;
+  padding: 1.25rem 1.5rem;
+  font-family: inherit;
+  font-size: 1rem;
+  font-weight: 700;
+  color: var(--bai-primary);
+  background: none;
+  border: 0;
+  cursor: pointer;
+  text-align: left;
+}
+.bai-accordion__btn > span { flex: 1 1 auto; text-align: center; }
+.bai-accordion__btn .bai-accordion__chev { transition: transform .25s var(--bai-ease); }
+.bai-accordion__btn[aria-expanded="true"] .bai-accordion__chev { transform: rotate(180deg); }
+.bai-accordion__panel { padding: 0 1.5rem 1.5rem; }
+.bai-accordion__panel p { font-size: 1rem; line-height: 1.625rem; font-weight: 300; color: var(--bai-neutral-700); }
+.bai-accordion__panel p + p { margin-top: 1rem; }
+
+/* ==========================================================================
+   17. Our Thinking — author page
+   ========================================================================== */
+.bai-author {
+  display: grid;
+  grid-template-columns: 300px minmax(0, 1fr);
+  gap: var(--bai-space-5);
+  max-width: 1000px;
+  margin-inline: auto;
+}
+.bai-author__portrait { width: 100%; aspect-ratio: 1 / 1; object-fit: cover; border-radius: var(--bai-radius-sm); display: block; }
+.bai-author__name { margin-top: var(--bai-space-3); font-size: 1.125rem; font-weight: 700; color: var(--bai-primary); }
+.bai-author__role { font-size: 1rem; font-weight: 300; color: var(--bai-neutral-700); }
+.bai-author__org { font-size: .875rem; font-weight: 700; font-style: italic; color: var(--bai-primary); }
+.bai-author__bio p { font-size: 1rem; line-height: 1.625rem; font-weight: 300; color: var(--bai-neutral-700); }
+.bai-author__bio p + p { margin-top: 1.25rem; }
+.bai-author__link {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--bai-space-2);
+  margin-top: var(--bai-space-4);
+  font-size: 1rem;
+  font-weight: 700;
+  color: var(--bai-primary);
+  transition: opacity .25s var(--bai-ease);
+}
+.bai-author__link:hover { opacity: var(--bai-hover-fade); }
+
+/* --- prototype-only hero switcher ---------------------------------------- */
+.bai-variant-switch {
+  position: fixed;
+  right: 16px;
+  bottom: 16px;
+  z-index: 1200;
+  display: flex;
+  gap: 4px;
+  padding: 6px;
+  background: rgba(16, 26, 53, .9);
+  border: 1px solid rgba(255, 255, 255, .18);
+  border-radius: var(--bai-radius-pill);
+  backdrop-filter: blur(6px);
+}
+.bai-variant-switch button {
+  padding: .4rem .8rem;
+  font-family: inherit;
+  font-size: .8125rem;
+  font-weight: 700;
+  color: rgba(255, 255, 255, .7);
+  background: none;
+  border: 0;
+  border-radius: var(--bai-radius-pill);
+  cursor: pointer;
+}
+.bai-variant-switch button[aria-pressed="true"] { color: var(--bai-primary); background: #fff; }
+
+/* ==========================================================================
+   18. Our Thinking — responsive
+   ========================================================================== */
+@media (max-width: 991.98px) {
+  .bai-article { grid-template-columns: minmax(0, 1fr); gap: var(--bai-space-5); }
+  .bai-aside { position: static; }
+  .bai-author { grid-template-columns: 220px minmax(0, 1fr); }
+  .bai-post-hero { padding-top: 108px; padding-bottom: 3rem; }
+  .bai-post-hero--image .bai-post-hero__bg::after {
+    background: linear-gradient(180deg, rgba(22, 36, 74, .82) 0%, rgba(22, 36, 74, .94) 60%, #16244a 100%);
+  }
+}
+
+@media (max-width: 767.98px) {
+  .bai-filters { flex-direction: column; align-items: stretch; }
+  .bai-filter { justify-content: center; }
+  .bai-author { grid-template-columns: minmax(0, 1fr); gap: var(--bai-space-4); }
+  .bai-author__portrait { max-width: 220px; }
+  .bai-pagination { flex-wrap: wrap; }
+  .bai-post-meta { gap: 1rem; font-size: 1rem; }
+  .bai-post-meta > * + *::before { display: none; }
+  .bai-video-stage::after { inset: 30% 0 -1px; }
+}
