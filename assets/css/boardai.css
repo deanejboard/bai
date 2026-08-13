@@ -75,6 +75,21 @@
   --bai-reveal-move: .7s;
   --bai-reveal-step: .15s;
   --bai-ease-reveal: cubic-bezier(.28, .11, .32, 1);
+
+  /* Card hover — Apple's .card-hover: a small scale, nothing else. No lift,
+     no shadow change. Apple computes the scale per card so every card grows by
+     the same pixel amount; a flat 1.0174 is close enough at these sizes. */
+  --bai-card-scale: 1.0174;
+  --bai-hover-dur:  .3s;
+  --bai-ease-hover: cubic-bezier(0, 0, .5, 1);
+
+  /* Mega-menu links — Apple's .globalnav-flyout-item. Note these drop DOWN
+     into place (-8px → 0), the opposite of the scroll reveal, and stagger at
+     20ms rather than 150ms, which is what keeps the panel feeling instant. */
+  --bai-dd-dur:   .32s;
+  --bai-dd-step:  20ms;
+  --bai-dd-group: 80ms;
+  --bai-ease-dd:  cubic-bezier(.4, 0, .6, 1);
 }
 
 /* Bootstrap overrides so BS components inherit the brand */
@@ -416,7 +431,44 @@ img, svg { max-width: 100%; }
   font-weight: 300;
   color: var(--bai-neutral-300);
 }
-.bai-topic:hover .bai-topic__title { color: var(--bai-violet-200); }
+/* The title is already pure white, so tinting it on hover only ever reads as
+   dimming. Brighten the description instead — the whole link lifts lighter. */
+.bai-topic__desc { transition: color .2s var(--bai-ease); }
+.bai-topic:hover .bai-topic__title { color: #fff; }
+.bai-topic:hover .bai-topic__desc { color: var(--bai-neutral-50); }
+
+/* --- mega-panel link entrance (Apple .globalnav-flyout-item) --------------
+   Items drop in from -8px on a 20ms-per-item stagger, offset 80ms per column
+   group. Closing drops the delay entirely so the panel snaps shut. */
+.bai-dropdown [data-dd-item] {
+  opacity: 0;
+  transform: translateY(-8px);
+  transition:
+    opacity   var(--bai-dd-dur) var(--bai-ease-dd)
+      calc(var(--dd-i, 0) * var(--bai-dd-step) + (var(--dd-g, 0) + 1) * var(--bai-dd-group)),
+    transform var(--bai-dd-dur) var(--bai-ease-dd)
+      calc(var(--dd-i, 0) * var(--bai-dd-step) + (var(--dd-g, 0) + 1) * var(--bai-dd-group));
+}
+.bai-dropdown.is-open [data-dd-item] { opacity: 1; transform: translateY(0); }
+.bai-dropdown:not(.is-open) [data-dd-item] {
+  transition-delay: 0s;
+  transition-duration: .2s;
+}
+
+/* index within the column, and which column group */
+.bai-dropdown__topics  { --dd-g: 0; }
+.bai-featured          { --dd-g: 1; }
+.bai-dropdown__grid .bai-topic:nth-child(1) { --dd-i: 1; }
+.bai-dropdown__grid .bai-topic:nth-child(2) { --dd-i: 2; }
+.bai-dropdown__grid .bai-topic:nth-child(3) { --dd-i: 3; }
+.bai-dropdown__grid .bai-topic:nth-child(4) { --dd-i: 4; }
+.bai-dropdown__grid .bai-topic:nth-child(5) { --dd-i: 5; }
+.bai-dropdown__grid .bai-topic:nth-child(6) { --dd-i: 6; }
+.bai-featured__card { --dd-i: 1; }
+
+@media (prefers-reduced-motion: reduce) {
+  .bai-dropdown [data-dd-item] { opacity: 1 !important; transform: none !important; }
+}
 
 .bai-featured__card {
   position: relative;
@@ -515,9 +567,12 @@ body.bai-no-scroll { overflow: hidden; }
   border-radius: var(--bai-radius);
   overflow: hidden;
   box-shadow: 0 12px 32px -8px rgba(0, 0, 0, .45);
-  transition: transform .3s var(--bai-ease), box-shadow .3s var(--bai-ease);
+  transform: scale(1);
+  transition: transform var(--bai-hover-dur) var(--bai-ease-hover);
 }
-.bai-tile:hover { transform: translateY(-4px); box-shadow: 0 20px 44px -10px rgba(0, 0, 0, .55); }
+@media (hover: hover) {
+  .bai-tile:hover { transform: scale(var(--bai-card-scale)); }
+}
 .bai-tile > img:not(.bai-tile__logo),
 .bai-tile > video { width: 100%; height: 100%; object-fit: cover; display: block; }
 .bai-tile--r1 { aspect-ratio: 223 / 260; }
@@ -605,9 +660,12 @@ body.bai-no-scroll { overflow: hidden; }
   border-radius: var(--bai-radius);
   overflow: hidden;
   box-shadow: var(--bai-shadow-card);
-  transition: transform .3s var(--bai-ease), box-shadow .3s var(--bai-ease);
+  transform: scale(1);
+  transition: transform var(--bai-hover-dur) var(--bai-ease-hover);
 }
-.bai-card:hover { transform: translateY(-4px); box-shadow: var(--bai-shadow-card-hover); }
+@media (hover: hover) {
+  .bai-card:hover { transform: scale(var(--bai-card-scale)); }
+}
 .bai-card > img:not(.bai-card__logo) { width: 100%; height: 100%; object-fit: cover; display: block; }
 .bai-card__body {
   position: absolute;
@@ -687,9 +745,12 @@ body.bai-no-scroll { overflow: hidden; }
   overflow: hidden;
   color: #fff;
   box-shadow: var(--bai-shadow-card);
-  transition: transform .3s var(--bai-ease), box-shadow .3s var(--bai-ease);
+  transform: scale(1);
+  transition: transform var(--bai-hover-dur) var(--bai-ease-hover);
 }
-.bai-feature:hover { transform: translateY(-4px); box-shadow: var(--bai-shadow-card-hover); }
+@media (hover: hover) {
+  .bai-feature:hover { transform: scale(var(--bai-card-scale)); }
+}
 .bai-feature--forecast  { background: linear-gradient(135deg, #28385e 0%, #2d6188 100%); }
 .bai-feature--analytics { background: linear-gradient(135deg, #2d6f66 0%, #2a7a6c 45%, #1f5859 100%); }
 .bai-feature--workflows { background: linear-gradient(135deg, #26637b 0%, #22708a 100%); }
