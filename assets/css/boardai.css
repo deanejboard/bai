@@ -19,11 +19,6 @@
   --bai-light-blue:    #32bef0;
   --bai-primary:       #142245;   /* Default/Primary — body + heading on light */
 
-  /* Light violet from board.com's own gradients (#BBA7F4 → #99DFF7). Used for
-     interactive hover on dark surfaces — echoes the hero violet, where the
-     brand cyan reads as a generic link colour. */
-  --bai-violet-200:    #bba7f4;
-
   --bai-neutral-50:    #e9ebf8;
   --bai-neutral-200:   #b4b8c6;
   --bai-neutral-300:   #9298ad;
@@ -66,6 +61,10 @@
                            0 22px 48px -8px rgba(16, 26, 53, .24);
 
   --bai-ease: cubic-bezier(.2, .7, .3, 1);
+
+  /* Every navigation hover is the same gesture: a slight fade, no colour
+     shift. Underlines and icon treatments stay as they are. */
+  --bai-hover-fade: .72;
 
   /* Scroll reveal — proportions taken from Apple's StaggeredFadeIn component.
      Opacity deliberately outlasts the movement; that gap is what stops the
@@ -125,7 +124,11 @@ p { margin: 0; }
    any nav link — Bootstrap blue on hover. Neutralise it here; components that
    want a real hover colour set their own and win on specificity. */
 a { color: inherit; text-decoration: none; }
-a:hover { color: inherit; }
+/* Scoped to UNCLASSED links only. A blanket a:hover (0,1,1) outranks a single
+   component class (0,1,0), so it would resolve `inherit` to the body colour and
+   turn white-on-dark links navy. Component links set their own hover colour
+   below, each at >= 2 classes so Bootstrap's a:hover can't win. */
+a:not([class]):hover { color: inherit; }
 img, svg { max-width: 100%; }
 
 /* Display 4 / hero title — Figma 48/54 ExtraBold */
@@ -311,7 +314,7 @@ img, svg { max-width: 100%; }
   color: #fff;
   transition: opacity .25s var(--bai-ease);
 }
-.bai-brand:hover { color: #fff; opacity: .72; }
+.bai-brand:hover { color: #fff; opacity: var(--bai-hover-fade); }
 .bai-brand__mark {
   display: block;
   width: 70px;
@@ -346,7 +349,11 @@ img, svg { max-width: 100%; }
 }
 /* Text stays full white; the underline is the hover signal, so it reads as the
    same gesture as the active state rather than a dimmed link. */
-.bai-nav__link:hover { border-bottom-color: rgba(255, 255, 255, .55); }
+.bai-nav__link:hover {
+  color: #fff;
+  opacity: var(--bai-hover-fade);
+  border-bottom-color: rgba(255, 255, 255, .55);
+}
 .bai-nav__link.is-active { border-bottom-color: #fff; }
 .bai-nav__link svg { transition: transform .25s var(--bai-ease); }
 .bai-nav__link[aria-expanded="true"] svg { transform: rotate(180deg); }
@@ -431,8 +438,10 @@ img, svg { max-width: 100%; }
   font-weight: 300;
   color: var(--bai-neutral-300);
 }
-/* The title is already pure white, so tinting it on hover only ever reads as
-   dimming. Brighten the description instead — the whole link lifts lighter. */
+/* Mega-panel links keep their own treatment: the title is already white, so it
+   holds, and the description brightens instead. (The opacity fade used on the
+   main nav is deliberately NOT applied here — these links carry the panel
+   entrance animation, and the two gestures read badly together.) */
 .bai-topic__desc { transition: color .2s var(--bai-ease); }
 .bai-topic:hover .bai-topic__title { color: #fff; }
 .bai-topic:hover .bai-topic__desc { color: var(--bai-neutral-50); }
@@ -514,6 +523,8 @@ img, svg { max-width: 100%; }
   border-bottom: 1px solid rgba(255, 255, 255, .12);
   text-align: left;
 }
+.bai-drawer__link { transition: opacity .25s var(--bai-ease); }
+.bai-drawer__link:hover { color: #fff; opacity: var(--bai-hover-fade); }
 .bai-drawer__link svg { transition: transform .25s var(--bai-ease); }
 .bai-drawer__link[aria-expanded="true"] svg { transform: rotate(180deg); }
 .bai-drawer__sub { padding: var(--bai-space-3) 0; }
@@ -839,9 +850,9 @@ body.bai-no-scroll { overflow: hidden; }
   font-size: 1rem;
   line-height: 1.5rem;
   font-weight: 300;
-  transition: color .2s var(--bai-ease);
+  transition: opacity .25s var(--bai-ease);
 }
-.bai-footer__link:hover { color: var(--bai-blue); }
+.bai-footer__link:hover { color: var(--bai-primary); opacity: var(--bai-hover-fade); }
 .bai-footer__lang {
   display: inline-flex;
   align-items: center;
@@ -853,7 +864,9 @@ body.bai-no-scroll { overflow: hidden; }
   padding: 0;
   cursor: pointer;
   color: var(--bai-primary);
+  transition: opacity .25s var(--bai-ease);
 }
+.bai-footer__lang:hover { opacity: var(--bai-hover-fade); }
 .bai-footer__copy {
   grid-column: 2 / 4;
   justify-self: center;
@@ -873,7 +886,7 @@ body.bai-no-scroll { overflow: hidden; }
   color: var(--bai-shade-100);
   transition: background-color .2s var(--bai-ease);
 }
-.bai-footer__social a:hover { background: var(--bai-violet); }
+.bai-footer__social a:hover { background: var(--bai-violet); color: var(--bai-shade-100); }
 
 /* --------------------------------------------------------------------------
    12. Responsive
