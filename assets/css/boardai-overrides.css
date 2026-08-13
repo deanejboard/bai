@@ -1054,6 +1054,15 @@ html.bai-motion .bai-feature[data-reveal-item] { --bai-reveal-y: 24px; }
   padding-top: 120px;
   padding-bottom: 3.5rem;
 }
+/* The tall home hero crops the background with `cover`. On these short heroes
+   that would show only the TOP third of the image — the purple — while the
+   wave divider below starts on navy, giving a hard seam at the join. Stretch
+   instead of crop so the full violet->navy ramp compresses into the shorter
+   hero and its bottom edge meets the wave on the same navy. (The Figma does
+   the same thing: its landing hero is a separate, shorter render of the same
+   gradient rather than a crop of the tall one.) The topographic texture
+   squashes slightly, which is invisible at this scale. */
+.bai-hero--sm::before { background-size: 100% 100%; }
 .bai-hero--sm .bai-hero__inner { max-width: 779px; margin-inline: 0; text-align: left; }
 
 /* --- breadcrumbs (theme: .breadcrumbs / .breadcrumb-separator) ------------ */
@@ -1155,6 +1164,33 @@ html.bai-motion .bai-feature[data-reveal-item] { --bai-reveal-y: 24px; }
   transition: opacity .25s var(--bai-ease);
 }
 .bai-filter:hover { opacity: var(--bai-hover-fade); }
+/* topic panel — opens, but does not filter (presentational by direction) */
+.bai-filter-wrap { position: relative; }
+.bai-filter-panel {
+  position: absolute;
+  top: calc(100% + 8px);
+  right: 0;
+  z-index: 20;
+  min-width: 260px;
+  padding: var(--bai-space-3);
+  background: #fff;
+  border: 1px solid var(--bai-neutral-200);
+  border-radius: var(--bai-radius-sm);
+  box-shadow: var(--bai-shadow-card);
+}
+.bai-filter-panel[hidden] { display: none; }
+.bai-filter-panel p { margin-bottom: var(--bai-space-2); color: var(--bai-neutral-400); }
+.bai-filter-panel label {
+  display: flex;
+  align-items: center;
+  gap: var(--bai-space-2);
+  padding: .375rem 0;
+  font-size: 1rem;
+  font-weight: 300;
+  cursor: pointer;
+}
+.bai-filter-panel input { accent-color: var(--bai-violet); width: 16px; height: 16px; flex: none; }
+
 .bai-filter__count {
   display: inline-flex;
   align-items: center;
