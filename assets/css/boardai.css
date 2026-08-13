@@ -1,0 +1,906 @@
+/* ==========================================================================
+   BoardAI.com — prototype theme layer
+   Sits on top of Bootstrap 5.1.0 (same major/minor as board.com's WP theme).
+   Tokens mirror the Figma variables in "Board AI.com FINAL" and the compiled
+   board.com theme.min.css, so this layer can be dropped into the real theme
+   with the custom properties swapped for the theme's own Sass variables.
+   ========================================================================== */
+
+/* --------------------------------------------------------------------------
+   1. Tokens
+   -------------------------------------------------------------------------- */
+:root {
+  /* Brand — from Figma "Board AI.com FINAL" variables */
+  --bai-violet:        #8739e4;
+  --bai-violet-700:    #6028a2;
+  --bai-violet-800:    #4a1f7d;
+  --bai-blue:          #253e7d;
+  --bai-blue-900:      #101a35;
+  --bai-light-blue:    #32bef0;
+  --bai-primary:       #142245;   /* Default/Primary — body + heading on light */
+
+  /* Light violet from board.com's own gradients (#BBA7F4 → #99DFF7). Used for
+     interactive hover on dark surfaces — echoes the hero violet, where the
+     brand cyan reads as a generic link colour. */
+  --bai-violet-200:    #bba7f4;
+
+  --bai-neutral-50:    #e9ebf8;
+  --bai-neutral-200:   #b4b8c6;
+  --bai-neutral-300:   #9298ad;
+  --bai-neutral-400:   #7d849d;
+  --bai-neutral-700:   #41485e;
+  --bai-shade-50:      #f2f2f2;
+  --bai-shade-100:     #d8d8d8;
+
+  /* Gradients lifted from board.com's compiled theme */
+  --bai-grad-primary:  linear-gradient(to right, #253e7d, #8739e4, #32bef0);
+  --bai-grad-cool:     linear-gradient(to right, #8739e4, #32bef0);
+
+  /* Spacing — Figma Spacing/1..6 */
+  --bai-space-1: 4px;
+  --bai-space-2: 8px;
+  --bai-space-3: 16px;
+  --bai-space-4: 24px;
+  --bai-space-5: 48px;
+  --bai-space-6: 84px;
+
+  /* Layout — Figma Block Padding */
+  --bai-gutter:        24px;   /* mobile side padding */
+  --bai-gutter-lg:     48px;
+  --bai-gutter-xl:     72px;   /* Block Padding/Default Desktop Left-Right */
+  --bai-page-max:      1440px;
+  --bai-header-h:      72px;
+
+  /* Radii */
+  --bai-radius:        16px;   /* Corner Radius/rounded-4 */
+  --bai-radius-sm:     8px;
+  --bai-radius-pill:   800px;  /* Corner Radius/rounded-pill */
+
+  /* Figma "Modern Shadow" */
+  --bai-shadow: 0 1px 3px rgba(0, 0, 0, .04),
+                0 8px 24px -4px rgba(0, 0, 0, .06),
+                0 20px 60px -12px rgba(0, 0, 0, .03);
+  --bai-shadow-card: 0 2px 4px rgba(16, 26, 53, .06),
+                     0 12px 28px -6px rgba(16, 26, 53, .14);
+  --bai-shadow-card-hover: 0 4px 8px rgba(16, 26, 53, .08),
+                           0 22px 48px -8px rgba(16, 26, 53, .24);
+
+  --bai-ease: cubic-bezier(.2, .7, .3, 1);
+
+  /* Scroll reveal — proportions taken from Apple's StaggeredFadeIn component.
+     Opacity deliberately outlasts the movement; that gap is what stops the
+     reveal reading as a "slide in". */
+  --bai-reveal-y:    30px;
+  --bai-reveal-fade: .9s;
+  --bai-reveal-move: .7s;
+  --bai-reveal-step: .15s;
+  --bai-ease-reveal: cubic-bezier(.28, .11, .32, 1);
+}
+
+/* Bootstrap overrides so BS components inherit the brand */
+:root {
+  --bs-font-sans-serif: "Mulish", system-ui, -apple-system, "Segoe UI", sans-serif;
+  --bs-body-font-family: "Mulish", system-ui, -apple-system, "Segoe UI", sans-serif;
+  --bs-body-color: var(--bai-primary);
+  --bs-body-bg: #fff;
+  --bs-border-radius: var(--bai-radius);
+}
+
+/* --------------------------------------------------------------------------
+   2. Base + typography
+   Scale follows board.com's clamp()-based .visual-h* ramp.
+   -------------------------------------------------------------------------- */
+html { scroll-behavior: smooth; }
+
+body {
+  font-family: var(--bs-body-font-family);
+  font-size: 1rem;
+  font-weight: 400;
+  line-height: 1.5;
+  color: var(--bai-primary);
+  background: #fff;
+  -webkit-font-smoothing: antialiased;
+  overflow-x: hidden;
+}
+
+h1, h2, h3, h4, h5, h6 { margin: 0; font-weight: 700; }
+p { margin: 0; }
+/* Bootstrap's reboot sets a:hover{color:#0a58ca}, which outranks a plain class
+   on the element (0,1,1 vs 0,1,0). That turned the masked board wordmark — and
+   any nav link — Bootstrap blue on hover. Neutralise it here; components that
+   want a real hover colour set their own and win on specificity. */
+a { color: inherit; text-decoration: none; }
+a:hover { color: inherit; }
+img, svg { max-width: 100%; }
+
+/* Display 4 / hero title — Figma 48/54 ExtraBold */
+.bai-display {
+  font-size: clamp(2rem, 1.25rem + 2.08vw, 3rem);
+  line-height: clamp(2.375rem, 1.55rem + 2.29vw, 3.375rem);
+  font-weight: 800;
+  letter-spacing: -.01em;
+}
+
+/* Heading 2 — Figma 40/48 Bold */
+.bai-h2 {
+  font-size: clamp(1.75rem, 1.29rem + 1.25vw, 2.5rem);
+  line-height: clamp(2.125rem, 1.72rem + 1.04vw, 3rem);
+  font-weight: 700;
+}
+
+/* Heading 4 — card titles, Figma 20/26 Bold */
+.bai-h4 {
+  font-size: 1.25rem;
+  line-height: 1.625rem;
+  font-weight: 700;
+}
+
+/* Desktop/Headings/Body Text — 18/26 Light, ls .05 */
+.bai-body {
+  font-size: 1.125rem;
+  line-height: 1.625rem;
+  font-weight: 300;
+  letter-spacing: .05px;
+}
+
+/* Desktop/Headings/Small Text — 16/24 Light */
+.bai-small {
+  font-size: 1rem;
+  line-height: 1.5rem;
+  font-weight: 300;
+  letter-spacing: .05px;
+}
+
+/* Eyebrow / label */
+.bai-eyebrow {
+  font-size: .875rem;
+  line-height: 1.25rem;
+  font-weight: 700;
+  letter-spacing: .09em;
+  text-transform: uppercase;
+}
+
+.bai-text-muted { color: var(--bai-neutral-400); }
+.bai-text-blue  { color: var(--bai-blue); }
+
+/* --------------------------------------------------------------------------
+   3. Layout
+   -------------------------------------------------------------------------- */
+.bai-container {
+  width: 100%;
+  max-width: var(--bai-page-max);
+  margin-inline: auto;
+  padding-inline: var(--bai-gutter);
+}
+
+/* Section rhythm — mirrors board.com's .block--spc ramp */
+.bai-block { position: relative; padding-block: 1.5rem; }
+
+@media (min-width: 768px) {
+  .bai-block { padding-block: 2.625rem; }
+}
+@media (min-width: 992px) {
+  .bai-container { padding-inline: var(--bai-gutter-lg); }
+  .bai-block { padding-block: 3.75rem; }
+}
+@media (min-width: 1200px) {
+  .bai-container { padding-inline: var(--bai-gutter-xl); }
+}
+
+/* --------------------------------------------------------------------------
+   4. Buttons — board.com's .btn-board geometry (pill, 8/24, 16/24 w700)
+   -------------------------------------------------------------------------- */
+.bai-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--bai-space-2);
+  padding: .5rem 1.5rem;
+  min-height: 40px;
+  font-size: 1rem;
+  line-height: 1.5rem;
+  font-weight: 700;
+  letter-spacing: .075px;
+  border: 1px solid transparent;
+  border-radius: var(--bai-radius-pill);
+  cursor: pointer;
+  text-align: center;
+  transition: background-color .2s var(--bai-ease), color .2s var(--bai-ease),
+              border-color .2s var(--bai-ease), transform .2s var(--bai-ease);
+}
+.bai-btn:focus-visible {
+  outline: 2px solid var(--bai-light-blue);
+  outline-offset: 2px;
+}
+.bai-btn svg { flex: none; }
+
+/* white pill on dark — nav "Contact Board", pre-footer CTA */
+.bai-btn--light { background: #fff; color: var(--bai-primary); }
+.bai-btn--light:hover { background: var(--bai-neutral-50); color: var(--bai-primary); }
+
+/* solid navy pill — sandbox CTA */
+.bai-btn--dark { background: var(--bai-primary); color: #fff; }
+.bai-btn--dark:hover { background: var(--bai-blue); color: #fff; }
+
+/* outline navy pill — "All Articles" */
+.bai-btn--outline {
+  background: transparent;
+  color: var(--bai-primary);
+  border-color: var(--bai-primary);
+}
+.bai-btn--outline:hover { background: var(--bai-primary); color: #fff; }
+
+/* violet pill — board.com's default primary, kept for parity */
+.bai-btn--violet { background: var(--bai-violet); color: #fff; }
+.bai-btn--violet:hover { background: var(--bai-violet-700); color: #fff; }
+
+/* text + arrow link — hero "Join the conversation" */
+.bai-btn--arrow {
+  padding: 0;
+  min-height: 24px;
+  background: none;
+  border: 0;
+  color: #fff;
+  border-radius: 0;
+}
+.bai-btn--arrow:hover { color: #fff; }
+.bai-btn--arrow svg { transition: transform .25s var(--bai-ease); }
+.bai-btn--arrow:hover svg { transform: translateY(3px); }
+
+/* uppercase CTA pill — sandbox, Figma 255x40 */
+.bai-btn--cta {
+  min-width: 255px;
+  font-size: .875rem;
+  letter-spacing: .09em;
+  text-transform: uppercase;
+}
+
+/* large pill — pre-footer, Figma 341x56 */
+.bai-btn--lg {
+  min-height: 56px;
+  padding: 1rem 2rem;
+  font-size: 1.25rem;
+  line-height: 1.5rem;
+}
+
+/* --------------------------------------------------------------------------
+   5. Header / navigation
+   Transparent over the hero, solid navy once scrolled — mega panel at xl
+   (1200px+) and a drawer below it, matching board.com's breakpoint.
+   -------------------------------------------------------------------------- */
+.bai-header {
+  position: fixed;
+  inset: 0 0 auto;
+  z-index: 1040;
+  height: var(--bai-header-h);
+  transition: background-color .3s var(--bai-ease), box-shadow .3s var(--bai-ease);
+}
+.bai-header__inner {
+  display: flex;
+  align-items: center;
+  gap: var(--bai-space-4);
+  height: var(--bai-header-h);
+}
+.bai-header.is-solid,
+.bai-header.is-open {
+  background: var(--bai-blue-900);
+}
+.bai-header.is-solid { box-shadow: 0 1px 0 rgba(255, 255, 255, .08); }
+
+/* brand — board wordmark (masked so it can be recoloured) + "AI" */
+/* Brand stays white on hover — a fade only. No tint, no lift, no shadow. */
+.bai-brand {
+  display: inline-flex;
+  align-items: baseline;
+  gap: 3px;
+  color: #fff;
+  transition: opacity .25s var(--bai-ease);
+}
+.bai-brand:hover { color: #fff; opacity: .72; }
+.bai-brand__mark {
+  display: block;
+  width: 70px;
+  height: 24px;
+  background-color: currentColor;
+  -webkit-mask: url("../img/logo-board.svg") left center / contain no-repeat;
+          mask: url("../img/logo-board.svg") left center / contain no-repeat;
+}
+.bai-brand__ai {
+  font-size: 1.25rem;
+  line-height: 1;
+  font-weight: 300;
+  color: rgba(255, 255, 255, .75);
+}
+
+.bai-nav { display: flex; align-items: center; gap: var(--bai-space-2); margin-inline: auto; }
+.bai-nav__link {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--bai-space-2);
+  padding: .5rem;
+  font-size: 1rem;
+  line-height: 1.25rem;
+  font-weight: 700;
+  letter-spacing: .075px;
+  color: #fff;
+  background: none;
+  border: 0;
+  border-bottom: 2px solid transparent;
+  cursor: pointer;
+  transition: border-color .2s var(--bai-ease), opacity .2s var(--bai-ease);
+}
+/* Text stays full white; the underline is the hover signal, so it reads as the
+   same gesture as the active state rather than a dimmed link. */
+.bai-nav__link:hover { border-bottom-color: rgba(255, 255, 255, .55); }
+.bai-nav__link.is-active { border-bottom-color: #fff; }
+.bai-nav__link svg { transition: transform .25s var(--bai-ease); }
+.bai-nav__link[aria-expanded="true"] svg { transform: rotate(180deg); }
+
+.bai-burger {
+  display: inline-flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 5px;
+  width: 44px;
+  height: 44px;
+  margin-left: auto;
+  padding: 10px;
+  background: none;
+  border: 0;
+  cursor: pointer;
+}
+.bai-burger span {
+  display: block;
+  height: 2px;
+  background: #fff;
+  border-radius: 2px;
+  transition: transform .25s var(--bai-ease), opacity .2s var(--bai-ease);
+}
+.bai-burger[aria-expanded="true"] span:nth-child(1) { transform: translateY(7px) rotate(45deg); }
+.bai-burger[aria-expanded="true"] span:nth-child(2) { opacity: 0; }
+.bai-burger[aria-expanded="true"] span:nth-child(3) { transform: translateY(-7px) rotate(-45deg); }
+
+/* --- desktop mega panel (Figma "Drop Down Demo", 1440x497) --- */
+.bai-dropdown {
+  position: absolute;
+  inset: var(--bai-header-h) 0 auto;
+  background: var(--bai-blue-900);
+  box-shadow: 0 24px 48px -12px rgba(16, 26, 53, .45);
+  display: grid;
+  grid-template-rows: 0fr;
+  visibility: hidden;
+  opacity: 0;
+  transition: grid-template-rows .3s var(--bai-ease), opacity .2s var(--bai-ease),
+              visibility .3s step-end;
+}
+.bai-dropdown.is-open {
+  grid-template-rows: 1fr;
+  visibility: visible;
+  opacity: 1;
+  transition: grid-template-rows .3s var(--bai-ease), opacity .2s var(--bai-ease),
+              visibility 0s;
+}
+.bai-dropdown__clip { overflow: hidden; }
+.bai-dropdown__inner {
+  display: grid;
+  grid-template-columns: 1fr 348px;
+  gap: var(--bai-space-5);
+  padding-block: 4.5rem 2rem;   /* Figma panel: label at y=79, card ends y=465 of 497 */
+}
+.bai-dropdown__topics { padding-right: var(--bai-space-5); border-right: 1px solid rgba(255, 255, 255, .12); }
+.bai-dropdown__label {
+  margin-bottom: 11px;
+  color: var(--bai-neutral-300);
+}
+.bai-dropdown__grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 18px var(--bai-space-5);   /* 68px row pitch, matching Figma */
+  align-content: start;
+  padding-top: 20px;
+}
+.bai-topic { display: block; }
+.bai-topic__title,
+.bai-topic__desc { display: block; }
+.bai-topic__title {
+  font-size: 1.125rem;
+  line-height: 1.5rem;
+  font-weight: 700;
+  color: #fff;
+  transition: color .2s var(--bai-ease);
+}
+.bai-topic__desc {
+  margin-top: 2px;
+  font-size: 1rem;
+  line-height: 1.5rem;
+  font-weight: 300;
+  color: var(--bai-neutral-300);
+}
+.bai-topic:hover .bai-topic__title { color: var(--bai-violet-200); }
+
+.bai-featured__card {
+  position: relative;
+  display: block;
+  aspect-ratio: 348 / 355;
+  border-radius: var(--bai-radius);
+  overflow: hidden;
+}
+.bai-featured__card > figure { position: absolute; inset: 0; margin: 0; }
+.bai-featured__card img { width: 100%; height: 100%; object-fit: cover; display: block; }
+.bai-featured__card figcaption {
+  position: absolute;
+  inset: auto 0 0;
+  padding: var(--bai-space-4);
+  background: linear-gradient(to top, rgba(16, 26, 53, .92) 0%, rgba(16, 26, 53, .65) 55%, rgba(16, 26, 53, 0) 100%);
+  color: #fff;
+}
+
+/* --- mobile drawer --- */
+.bai-drawer {
+  position: fixed;
+  inset: var(--bai-header-h) 0 0;
+  z-index: 1030;
+  padding: var(--bai-space-4) 0 var(--bai-space-6);
+  background: var(--bai-blue-900);
+  overflow-y: auto;
+  transform: translateX(100%);
+  visibility: hidden;
+  transition: transform .3s var(--bai-ease), visibility .3s step-end;
+}
+.bai-drawer.is-open { transform: none; visibility: visible; transition: transform .3s var(--bai-ease), visibility 0s; }
+.bai-drawer__link {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  padding: var(--bai-space-3) 0;
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: #fff;
+  background: none;
+  border: 0;
+  border-bottom: 1px solid rgba(255, 255, 255, .12);
+  text-align: left;
+}
+.bai-drawer__link svg { transition: transform .25s var(--bai-ease); }
+.bai-drawer__link[aria-expanded="true"] svg { transform: rotate(180deg); }
+.bai-drawer__sub { padding: var(--bai-space-3) 0; }
+.bai-drawer__sub .bai-topic { padding-block: var(--bai-space-2); }
+.bai-drawer .bai-btn { width: 100%; margin-top: var(--bai-space-5); }
+
+body.bai-no-scroll { overflow: hidden; }
+
+/* --------------------------------------------------------------------------
+   6. Hero
+   Background is the exported Figma overlay (violet -> navy + topography),
+   cropped above the baked-in wave so the wave divider below can stay a
+   separate, fluid element. Anchored left/top so the violet bloom survives
+   the horizontal crop on tall narrow viewports.
+   -------------------------------------------------------------------------- */
+.bai-hero {
+  position: relative;
+  padding-top: 120px;   /* nav overlays the hero — Figma Text Container y=120 */
+  padding-bottom: 80px;
+  background-color: #171e42;
+  background-image: url("../img/hero-bg.jpg");
+  background-repeat: no-repeat;
+  background-position: left top;
+  background-size: cover;
+  color: #fff;
+  overflow: hidden;
+}
+.bai-hero__inner {
+  max-width: 1030px;
+  margin-inline: auto;
+  text-align: center;
+}
+.bai-hero__title { max-width: 700px; margin-inline: auto; }
+.bai-hero__desc { max-width: 1030px; margin-inline: auto; }
+
+/* staggered 3-card cluster — Figma "bento 6" (927px cluster inside 1030px column) */
+.bai-bento {
+  display: grid;
+  grid-template-columns: 223fr 380fr 301fr;
+  align-items: start;
+  gap: 11px;
+  max-width: 927px;
+  margin-inline: auto;
+}
+.bai-bento__cell:nth-child(1) { padding-top: 0; }
+.bai-bento__cell:nth-child(3) { padding-top: 92px; }
+
+.bai-tile {
+  position: relative;
+  display: block;
+  border-radius: var(--bai-radius);
+  overflow: hidden;
+  box-shadow: 0 12px 32px -8px rgba(0, 0, 0, .45);
+  transition: transform .3s var(--bai-ease), box-shadow .3s var(--bai-ease);
+}
+.bai-tile:hover { transform: translateY(-4px); box-shadow: 0 20px 44px -10px rgba(0, 0, 0, .55); }
+.bai-tile > img:not(.bai-tile__logo),
+.bai-tile > video { width: 100%; height: 100%; object-fit: cover; display: block; }
+.bai-tile--r1 { aspect-ratio: 223 / 260; }
+.bai-tile--r2 { aspect-ratio: 380 / 394; }
+.bai-tile--r3 { aspect-ratio: 301 / 301; }
+
+/* text overlaid on imagery */
+.bai-tile__body {
+  position: absolute;
+  inset: auto 0 0;
+  padding: 1rem;
+  text-align: left;
+  color: #fff;
+}
+.bai-tile--photo .bai-tile__body {
+  background: linear-gradient(to top, rgba(10, 16, 36, .92) 0%, rgba(10, 16, 36, .55) 60%, rgba(10, 16, 36, 0) 100%);
+  padding-top: 3rem;
+}
+.bai-tile__meta {
+  display: flex;
+  align-items: center;
+  gap: .5rem;
+  margin-bottom: .25rem;
+  font-size: .75rem;
+  line-height: 1.125rem;
+}
+.bai-tile__meta b { font-weight: 700; letter-spacing: .08em; text-transform: uppercase; white-space: nowrap; }
+.bai-tile__meta span { opacity: .55; }
+.bai-tile__meta time { font-weight: 300; opacity: .8; white-space: nowrap; }
+.bai-tile__title {
+  font-size: .875rem;
+  line-height: 1.25rem;
+  font-weight: 700;
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+/* play/pause badge on video tiles */
+.bai-tile__play {
+  position: absolute;
+  top: 1rem;
+  right: 1rem;
+  width: 36px;
+  height: 36px;
+  color: rgba(255, 255, 255, .85);
+}
+
+/* branded (logo + generative background) tiles */
+.bai-tile--brand { background: linear-gradient(150deg, #22396b 0%, #16284f 100%); }
+.bai-tile--brand .bai-tile__logo {
+  position: absolute;
+  top: 1rem;
+  left: 1rem;
+  width: 112px;
+  height: auto;
+}
+.bai-tile__pattern { position: absolute; inset: 0; width: 100%; height: 100%; }
+
+/* --------------------------------------------------------------------------
+   7. Wave dividers (exported from Figma's C21. Divider component)
+   -------------------------------------------------------------------------- */
+.bai-wave { position: relative; line-height: 0; pointer-events: none; }
+.bai-wave img { width: 100%; height: auto; display: block; }
+.bai-wave--hero { margin-top: -1px; }
+.bai-wave--ribbon { margin-block: -1px; }
+.bai-wave--dark { margin-bottom: -1px; }
+
+/* --------------------------------------------------------------------------
+   8. Thinking feed
+   -------------------------------------------------------------------------- */
+.bai-section-head { text-align: center; }
+.bai-section-head .bai-h2 { margin-bottom: var(--bai-space-2); }
+
+.bai-feed {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: var(--bai-space-5);
+}
+.bai-card {
+  position: relative;
+  display: block;
+  aspect-ratio: 1 / 1;
+  border-radius: var(--bai-radius);
+  overflow: hidden;
+  box-shadow: var(--bai-shadow-card);
+  transition: transform .3s var(--bai-ease), box-shadow .3s var(--bai-ease);
+}
+.bai-card:hover { transform: translateY(-4px); box-shadow: var(--bai-shadow-card-hover); }
+.bai-card > img:not(.bai-card__logo) { width: 100%; height: 100%; object-fit: cover; display: block; }
+.bai-card__body {
+  position: absolute;
+  inset: auto 0 0;
+  padding: var(--bai-space-4);
+  color: #fff;
+}
+.bai-card--photo .bai-card__body {
+  padding-top: 4rem;
+  background: linear-gradient(to top, rgba(10, 16, 36, .94) 0%, rgba(10, 16, 36, .6) 55%, rgba(10, 16, 36, 0) 100%);
+}
+.bai-card__meta {
+  display: flex;
+  align-items: center;
+  gap: .625rem;
+  margin-bottom: var(--bai-space-1);
+  font-size: .875rem;
+  line-height: 1.5rem;
+}
+.bai-card__meta b { font-weight: 700; letter-spacing: .08em; text-transform: uppercase; white-space: nowrap; }
+.bai-card__meta span { opacity: .5; }
+.bai-card__meta time { font-weight: 300; opacity: .85; white-space: nowrap; }
+.bai-card__title {
+  font-size: 1.25rem;
+  line-height: 1.625rem;
+  font-weight: 700;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+.bai-card__logo {
+  position: absolute;
+  top: var(--bai-space-4);
+  left: var(--bai-space-4);
+  height: auto;
+}
+.bai-card--gartner .bai-card__logo { width: 157px; }
+.bai-card--gm .bai-card__logo { width: 96px; }
+
+/* branded card backgrounds — sampled from the Figma render */
+.bai-card--gartner { background: linear-gradient(150deg, #1d3363 0%, #17284f 100%); }
+.bai-card--gm      { background: linear-gradient(140deg, #3b3585 0%, #302a75 100%); }
+
+/* --------------------------------------------------------------------------
+   9. Sandbox
+   -------------------------------------------------------------------------- */
+.bai-sandbox__grid {
+  display: grid;
+  grid-template-columns: 480fr 768fr;
+  gap: var(--bai-space-5);
+  align-items: center;
+}
+.bai-sandbox__copy { max-width: 480px; }
+.bai-sandbox__copy .bai-eyebrow { color: var(--bai-blue); }
+.bai-sandbox__copy .bai-h2 { margin-block: var(--bai-space-3) var(--bai-space-3); }
+.bai-sandbox__copy p + p { margin-top: var(--bai-space-3); }
+.bai-sandbox__copy .bai-btn { margin-top: var(--bai-space-4); }
+
+/* two-column stagger: one offset card left, two stacked right (Figma Right Cards) */
+.bai-sandbox__cards {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: var(--bai-space-4);
+  align-items: start;
+}
+.bai-sandbox__stack { display: grid; gap: var(--bai-space-4); }
+.bai-sandbox__lead { margin-top: 199px; }
+
+.bai-feature {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  aspect-ratio: 372 / 375;
+  padding: var(--bai-space-4);
+  border-radius: var(--bai-radius);
+  overflow: hidden;
+  color: #fff;
+  box-shadow: var(--bai-shadow-card);
+  transition: transform .3s var(--bai-ease), box-shadow .3s var(--bai-ease);
+}
+.bai-feature:hover { transform: translateY(-4px); box-shadow: var(--bai-shadow-card-hover); }
+.bai-feature--forecast  { background: linear-gradient(135deg, #28385e 0%, #2d6188 100%); }
+.bai-feature--analytics { background: linear-gradient(135deg, #2d6f66 0%, #2a7a6c 45%, #1f5859 100%); }
+.bai-feature--workflows { background: linear-gradient(135deg, #26637b 0%, #22708a 100%); }
+
+.bai-feature__title { font-size: 1.125rem; line-height: 1.5rem; font-weight: 700; }
+.bai-feature__desc {
+  margin-top: var(--bai-space-2);
+  padding-bottom: var(--bai-space-3);
+  font-size: 1rem;
+  line-height: 1.625rem;
+  font-weight: 300;
+  color: rgba(255, 255, 255, .85);
+  border-bottom: 1px dashed rgba(255, 255, 255, .18);
+}
+.bai-feature__chart {
+  position: absolute;
+  inset: 40% 0 auto;
+  width: 100%;
+  height: 38%;
+  opacity: .9;
+}
+.bai-feature__lock {
+  position: relative;
+  margin-top: auto;
+  padding-bottom: var(--bai-space-2);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--bai-space-2);
+  color: rgba(255, 255, 255, .75);
+  font-size: 1rem;
+  font-weight: 300;
+}
+
+/* --------------------------------------------------------------------------
+   10. Pre-footer CTA
+   -------------------------------------------------------------------------- */
+.bai-prefooter {
+  position: relative;
+  background: #101935;
+  color: #fff;
+  overflow: hidden;
+}
+.bai-prefooter__bg {
+  position: absolute;
+  inset: 0;
+  background-image: url("../img/prefooter-mesh.png"), url("../img/prefooter-waves.png");
+  background-repeat: no-repeat, no-repeat;
+  background-position: center, center;
+  background-size: cover, cover;
+}
+.bai-prefooter__inner {
+  position: relative;
+  display: grid;
+  grid-template-columns: minmax(0, 740px) auto;
+  align-items: center;
+  gap: var(--bai-space-5);
+  padding-block: 5.8rem;
+}
+.bai-prefooter__desc { margin-top: var(--bai-space-3); color: rgba(255, 255, 255, .7); }
+.bai-prefooter .bai-btn { justify-self: end; white-space: nowrap; }
+
+/* --------------------------------------------------------------------------
+   11. Footer
+   -------------------------------------------------------------------------- */
+.bai-footer { background: var(--bai-shade-100); color: var(--bai-primary); }
+.bai-footer__inner { padding-block: 3rem; }
+.bai-footer__row {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr 1fr;
+  align-items: center;
+  gap: var(--bai-space-4);
+}
+.bai-footer__row + .bai-footer__row { margin-top: var(--bai-space-5); }
+.bai-footer__mark {
+  display: block;
+  width: 120px;
+  height: 42px;
+  color: var(--bai-neutral-400);
+  background-color: currentColor;
+  -webkit-mask: url("../img/logo-board.svg") left center / contain no-repeat;
+          mask: url("../img/logo-board.svg") left center / contain no-repeat;
+}
+.bai-footer__link {
+  justify-self: center;
+  font-size: 1rem;
+  line-height: 1.5rem;
+  font-weight: 300;
+  transition: color .2s var(--bai-ease);
+}
+.bai-footer__link:hover { color: var(--bai-blue); }
+.bai-footer__lang {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--bai-space-2);
+  font-size: 1rem;
+  font-weight: 700;
+  background: none;
+  border: 0;
+  padding: 0;
+  cursor: pointer;
+  color: var(--bai-primary);
+}
+.bai-footer__copy {
+  grid-column: 2 / 4;
+  justify-self: center;
+  font-size: 1rem;
+  font-weight: 300;
+  color: var(--bai-primary);
+}
+.bai-footer__social { display: flex; gap: var(--bai-space-2); justify-self: end; }
+.bai-footer__social a {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  background: var(--bai-primary);
+  color: var(--bai-shade-100);
+  transition: background-color .2s var(--bai-ease);
+}
+.bai-footer__social a:hover { background: var(--bai-violet); }
+
+/* --------------------------------------------------------------------------
+   12. Responsive
+   Breakpoints follow Bootstrap 5 / board.com: mega panel at xl, drawer below.
+   -------------------------------------------------------------------------- */
+@media (max-width: 1199.98px) {
+  .bai-prefooter__inner { padding-block: 4rem; }
+}
+
+@media (max-width: 991.98px) {
+  /* hero cluster: hero video leads, the other two sit side by side */
+  .bai-bento {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: var(--bai-space-3);
+  }
+  .bai-bento__cell:nth-child(2) { grid-column: 1 / -1; order: -1; }
+  .bai-bento__cell:nth-child(3) { padding-top: 0; }
+  .bai-tile--r1, .bai-tile--r3 { aspect-ratio: 1 / 1; }
+  .bai-tile--r2 { aspect-ratio: 16 / 10; }
+
+  .bai-feed { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: var(--bai-space-4); }
+
+  /* flatten the stagger into an even grid once the columns stack */
+  .bai-sandbox__grid { grid-template-columns: minmax(0, 1fr); gap: var(--bai-space-5); }
+  .bai-sandbox__copy { max-width: 640px; }
+  .bai-sandbox__lead { margin-top: 0; }
+  .bai-sandbox__stack { display: contents; }
+
+  .bai-prefooter__inner {
+    grid-template-columns: minmax(0, 1fr);
+    gap: var(--bai-space-4);
+    padding-block: 3.5rem;
+  }
+  .bai-prefooter .bai-btn { justify-self: start; }
+
+  .bai-footer__row { grid-template-columns: 1fr 1fr; }
+  .bai-footer__copy { grid-column: 1 / -1; justify-self: start; }
+  .bai-footer__link { justify-self: start; }
+  .bai-footer__social { justify-self: start; }
+}
+
+@media (max-width: 767.98px) {
+  .bai-hero { padding-top: 100px; padding-bottom: 3rem; }
+
+  .bai-bento { grid-template-columns: minmax(0, 1fr); }
+  .bai-bento__cell:nth-child(2) { order: 0; }
+  .bai-tile--r1, .bai-tile--r3 { aspect-ratio: 16 / 10; }
+
+  .bai-feed { grid-template-columns: minmax(0, 1fr); }
+
+  .bai-sandbox__cards { grid-template-columns: minmax(0, 1fr); }
+
+  .bai-footer__row { grid-template-columns: minmax(0, 1fr); gap: var(--bai-space-3); }
+  .bai-footer__row + .bai-footer__row { margin-top: var(--bai-space-4); }
+  .bai-prefooter .bai-btn { width: 100%; }
+}
+
+/* --------------------------------------------------------------------------
+   13. Scroll reveal
+   Gated on .bai-motion, which JS puts on <html> before first paint and only
+   when the user hasn't asked for reduced motion. Without JS — or with reduced
+   motion — none of these rules match and every element renders as normal.
+
+   Once an item has finished revealing, JS adds .bai-reveal-done, at which
+   point these rules stop matching entirely: will-change is released and the
+   element's own hover transform/transition take over cleanly.
+   -------------------------------------------------------------------------- */
+html.bai-motion [data-reveal-item]:not(.bai-reveal-done) {
+  opacity: 0;
+  transform: translate3d(0, var(--bai-reveal-y), 0);
+  transition:
+    opacity   var(--bai-reveal-fade) var(--bai-ease-reveal) var(--bai-reveal-delay, 0s),
+    transform var(--bai-reveal-move) var(--bai-ease-reveal) var(--bai-reveal-delay, 0s);
+  will-change: opacity, transform;
+}
+
+html.bai-motion [data-reveal-item].is-revealed:not(.bai-reveal-done) {
+  opacity: 1;
+  transform: none;
+}
+
+/* Large media rises a little less, so big blocks don't feel like they travel
+   further than the text beside them. */
+html.bai-motion .bai-card[data-reveal-item],
+html.bai-motion .bai-feature[data-reveal-item] { --bai-reveal-y: 24px; }
+
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+  *, *::before, *::after { transition-duration: .01ms !important; animation-duration: .01ms !important; }
+  [data-reveal-item] { opacity: 1 !important; transform: none !important; }
+}
