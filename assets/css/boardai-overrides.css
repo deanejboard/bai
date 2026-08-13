@@ -566,13 +566,26 @@ body.bai-no-scroll { overflow: hidden; }
   padding-top: 120px;   /* nav overlays the hero — Figma Text Container y=120 */
   padding-bottom: 80px;
   background-color: #171e42;
-  background-image: url("../img/hero-bg.jpg");
-  background-repeat: no-repeat;
-  background-position: left top;
-  background-size: cover;
   color: #fff;
   overflow: hidden;
 }
+/* The Figma export bakes the wave and its fade-to-white into the bottom 36px
+   (3.5%) of the image. Rather than crop the asset — sips silently centre-crops
+   and quietly ate the violet bloom off the top last time — the background sits
+   on an overhanging layer that the hero clips. 105% clears the 3.5% band with
+   margin, and the number is adjustable if the export changes.
+   Without this, the pale band appears as a "gap" above the wave divider on any
+   viewport tall enough that `cover` doesn't already crop it away — i.e. mobile
+   and tablet, but not desktop. */
+.bai-hero::before {
+  content: "";
+  position: absolute;
+  inset: 0 0 auto;
+  height: 105%;
+  background: url("../img/hero-bg.jpg") left top / cover no-repeat;
+  z-index: 0;
+}
+.bai-hero > * { position: relative; z-index: 1; }
 .bai-hero__inner {
   max-width: 1030px;
   margin-inline: auto;
@@ -653,6 +666,29 @@ body.bai-no-scroll { overflow: hidden; }
   height: 36px;
   color: rgba(255, 255, 255, .85);
 }
+/* Real control, so it sits above the stretched card link and takes its own
+   pointer + focus. */
+button.bai-tile__play {
+  z-index: 3;
+  padding: 0;
+  background: none;
+  border: 0;
+  cursor: pointer;
+  transition: opacity .2s var(--bai-ease), transform .2s var(--bai-ease);
+}
+button.bai-tile__play:hover { opacity: .8; }
+button.bai-tile__play:focus-visible { outline: 2px solid #fff; outline-offset: 3px; border-radius: 50%; }
+button.bai-tile__play svg { display: block; width: 100%; height: 100%; }
+
+/* Stretched link: the whole tile is clickable, but the play button stays on
+   top of it, which a plain <a> wrapper could never allow (a <button> inside an
+   <a> is invalid and unclickable). */
+.bai-tile__link::after { content: ""; position: absolute; inset: 0; z-index: 2; }
+.bai-tile__link:focus-visible::after { outline: 2px solid #fff; outline-offset: -4px; border-radius: var(--bai-radius); }
+.bai-visually-hidden {
+  position: absolute !important; width: 1px; height: 1px;
+  padding: 0; margin: -1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; border: 0;
+}
 
 /* branded (logo + generative background) tiles */
 .bai-tile--brand { background: linear-gradient(150deg, #22396b 0%, #16284f 100%); }
@@ -678,6 +714,11 @@ body.bai-no-scroll { overflow: hidden; }
    8. Thinking feed
    -------------------------------------------------------------------------- */
 .bai-section-head { text-align: center; }
+/* The section directly under the hero wave: trim the top padding so the wave
+   reads as leading into the section rather than floating above it. */
+.bai-block--after-wave { padding-top: 1rem; }
+@media (min-width: 768px) { .bai-block--after-wave { padding-top: 1.75rem; } }
+@media (min-width: 992px) { .bai-block--after-wave { padding-top: 2.5rem; } }
 .bai-section-head .bai-h2 { margin-bottom: var(--bai-space-2); }
 
 .bai-feed {
@@ -729,6 +770,12 @@ body.bai-no-scroll { overflow: hidden; }
   -webkit-box-orient: vertical;
   overflow: hidden;
 }
+/* Optional black & white treatment, applied over the ORIGINAL COLOUR image so
+   it stays a presentation choice rather than a baked-in asset. Colour returns
+   on hover, which also proves the source image is untouched. */
+.bai-card--mono > img { filter: grayscale(1) contrast(1.04); transition: filter .45s var(--bai-ease-hover); }
+@media (hover: hover) { .bai-card--mono:hover > img { filter: grayscale(0) contrast(1); } }
+
 .bai-card__logo {
   position: absolute;
   top: var(--bai-space-4);
@@ -755,7 +802,7 @@ body.bai-no-scroll { overflow: hidden; }
 .bai-sandbox__copy .bai-eyebrow { color: var(--bai-blue); }
 .bai-sandbox__copy .bai-h2 { margin-block: var(--bai-space-3) var(--bai-space-3); }
 .bai-sandbox__copy p + p { margin-top: var(--bai-space-3); }
-.bai-sandbox__copy .bai-btn { margin-top: var(--bai-space-4); }
+.bai-sandbox__copy .bai-btn { margin-top: var(--bai-space-5); }  /* Figma: 372 -> 420 */
 
 /* two-column stagger: one offset card left, two stacked right (Figma Right Cards) */
 .bai-sandbox__cards {
@@ -918,15 +965,20 @@ body.bai-no-scroll { overflow: hidden; }
 }
 
 @media (max-width: 991.98px) {
-  /* hero cluster: hero video leads, the other two sit side by side */
+  /* Tablet keeps all three cards on one row — ElevenLabs holds a 3-across card
+     row at 834px with a 16px gap, and the staggered trio is the strongest part
+     of this hero. The stagger flattens and the tiles equalise to portrait so
+     the row reads as a set. */
   .bai-bento {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
+    grid-template-columns: repeat(3, minmax(0, 1fr));
     gap: var(--bai-space-3);
+    max-width: none;
+    align-items: stretch;
   }
-  .bai-bento__cell:nth-child(2) { grid-column: 1 / -1; order: -1; }
+  .bai-bento__cell { display: flex; }
+  .bai-bento__cell > .bai-tile { width: 100%; }
   .bai-bento__cell:nth-child(3) { padding-top: 0; }
-  .bai-tile--r1, .bai-tile--r3 { aspect-ratio: 1 / 1; }
-  .bai-tile--r2 { aspect-ratio: 16 / 10; }
+  .bai-tile--r1, .bai-tile--r2, .bai-tile--r3 { aspect-ratio: 3 / 4; }
 
   .bai-feed { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: var(--bai-space-4); }
 
