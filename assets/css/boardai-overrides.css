@@ -1174,45 +1174,21 @@ html.bai-motion .bai-feature[data-reveal-item] { --bai-reveal-y: 24px; }
   transition: opacity .25s var(--bai-ease);
 }
 .bai-filter:hover { opacity: var(--bai-hover-fade); }
-/* topic panel — opens, but does not filter (presentational by direction) */
-.bai-filter-wrap { position: relative; }
-.bai-filter-panel {
-  position: absolute;
-  top: calc(100% + 8px);
-  right: 0;
-  z-index: 20;
-  min-width: 260px;
-  padding: var(--bai-space-3);
-  background: #fff;
-  border: 1px solid var(--bai-neutral-200);
-  border-radius: var(--bai-radius-sm);
-  box-shadow: var(--bai-shadow-card);
-}
-.bai-filter-panel[hidden] { display: none; }
-.bai-filter-panel p { margin-bottom: var(--bai-space-2); color: var(--bai-neutral-400); }
-.bai-filter-panel label {
-  display: flex;
-  align-items: center;
-  gap: var(--bai-space-2);
-  padding: .375rem 0;
-  font-size: 1rem;
-  font-weight: 300;
-  cursor: pointer;
-}
-/* The theme hides native checkboxes (position:absolute; opacity:0) because it
-   swaps in its own control. This panel uses plain checkboxes, so put them back. */
-.bai-filter-panel input[type="checkbox"] {
-  position: static;
-  opacity: 1;
-  -webkit-appearance: checkbox;
-          appearance: auto;
-  width: 16px;
-  height: 16px;
-  margin: 0;
-  flex: none;
-  accent-color: var(--bai-violet);
-}
+/* --------------------------------------------------------------------------
+   Filter component — "52. Filter v1.2.0", Top Bar variant
+   (Figma: New Filtration Component - FINAL)
 
+   Desktop: search + one pill per filter group, panel drops below the pill.
+   Mobile:  search + a funnel icon with a count badge; the panel expands
+            INLINE and pushes the archive down, which is what the Figma does
+            (the component grows 70px -> 783px rather than overlaying).
+   -------------------------------------------------------------------------- */
+.bai-filter-wrap { position: relative; }
+
+/* --- desktop pill --------------------------------------------------------- */
+.bai-filter-icon { display: none; }
+
+/* count badge — shared by the desktop pill and the mobile funnel */
 .bai-filter__count {
   display: inline-flex;
   align-items: center;
@@ -1222,9 +1198,252 @@ html.bai-motion .bai-feature[data-reveal-item] { --bai-reveal-y: 24px; }
   padding: 0 5px;
   font-size: .75rem;
   font-weight: 700;
+  line-height: 1;
   color: #fff;
   background: var(--bai-grad-action);
   border-radius: 999px;
+  flex: none;
+}
+.bai-filter__count[hidden] { display: none; }
+
+/* --- mobile funnel trigger ------------------------------------------------ */
+.bai-filter-icon {
+  position: relative;
+  align-items: center;
+  justify-content: center;
+  width: 46px;
+  height: 46px;
+  flex: none;
+  color: var(--bai-blue);
+  background: #fff;
+  border: 1px solid var(--bai-neutral-200);
+  border-radius: 50%;
+  cursor: pointer;
+  padding: 0;
+}
+.bai-filter-icon svg { width: 20px; height: 20px; max-width: none; flex: none; }
+.bai-filter-icon .bai-filter__count {
+  position: absolute;
+  top: -4px;
+  right: -4px;
+}
+
+/* --- the panel ------------------------------------------------------------ */
+.bai-filter-panel {
+  position: absolute;
+  top: calc(100% + 8px);
+  right: 0;
+  z-index: 20;
+  width: 360px;
+  padding: var(--bai-space-4);
+  background: #fff;
+  border: 1px solid var(--bai-neutral-50);
+  border-radius: var(--bai-radius-sm);
+  box-shadow: var(--bai-shadow-card);
+}
+.bai-filter-panel[hidden] { display: none; }
+
+.bai-filter-panel__close {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  width: 28px;
+  height: 28px;
+  padding: 0;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--bai-neutral-400);
+  background: none;
+  border: 0;
+  cursor: pointer;
+  transition: opacity .25s var(--bai-ease);
+}
+.bai-filter-panel__close:hover { opacity: var(--bai-hover-fade); }
+.bai-filter-panel__close svg { width: 14px; height: 14px; max-width: none; flex: none; }
+
+.bai-filter-panel__head {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: var(--bai-space-3);
+  padding-right: 28px;
+}
+.bai-filter-panel__title {
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: var(--bai-blue);
+}
+.bai-filter-panel__applied {
+  margin-top: 2px;
+  font-size: .875rem;
+  font-weight: 300;
+  color: var(--bai-neutral-400);
+}
+.bai-filter-clear {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 0;
+  font-family: inherit;
+  font-size: .875rem;
+  font-weight: 700;
+  color: var(--bai-blue);
+  background: none;
+  border: 0;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: opacity .25s var(--bai-ease);
+}
+.bai-filter-clear:hover { opacity: var(--bai-hover-fade); }
+.bai-filter-clear svg { width: 14px; height: 14px; max-width: none; flex: none; }
+
+/* --- one accordion group -------------------------------------------------- */
+.bai-filter-group {
+  margin-top: var(--bai-space-3);
+  border: 1px solid var(--bai-neutral-50);
+  border-radius: var(--bai-radius-sm);
+}
+.bai-filter-group__btn {
+  display: flex;
+  align-items: center;
+  gap: var(--bai-space-2);
+  width: 100%;
+  padding: var(--bai-space-3);
+  font-family: inherit;
+  font-size: 1rem;
+  font-weight: 700;
+  color: var(--bai-primary);
+  background: none;
+  border: 0;
+  cursor: pointer;
+  text-align: left;
+}
+.bai-filter-group__btn > span:first-of-type { flex: 1 1 auto; }
+.bai-filter-group__btn .bai-filter-group__chev {
+  width: 13px; height: 8px; max-width: none; flex: none;
+  transition: transform .25s var(--bai-ease);
+}
+.bai-filter-group__btn[aria-expanded="true"] .bai-filter-group__chev { transform: rotate(180deg); }
+.bai-filter-group__count {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 20px;
+  height: 20px;
+  padding: 0 5px;
+  font-size: .75rem;
+  font-weight: 700;
+  color: #fff;
+  background: var(--bai-neutral-300);
+  border-radius: 999px;
+}
+.bai-filter-group__body { padding: 0 var(--bai-space-3) var(--bai-space-3); }
+.bai-filter-group__body[hidden] { display: none; }
+
+/* inner search inside a group */
+.bai-filter-search { position: relative; margin-bottom: var(--bai-space-2); }
+.bai-filter-search input {
+  width: 100%;
+  height: 38px;
+  padding: 0 36px 0 .75rem;
+  font-family: inherit;
+  font-size: .875rem;
+  font-style: italic;
+  font-weight: 300;
+  color: var(--bai-primary);
+  background: #fbfbfe;
+  border: 1px solid var(--bai-neutral-50);
+  border-radius: var(--bai-radius-sm);
+}
+.bai-filter-search input:focus { outline: 2px solid var(--bai-light-blue); outline-offset: 1px; }
+.bai-filter-search svg {
+  position: absolute;
+  top: 50%;
+  right: 10px;
+  transform: translateY(-50%);
+  width: 16px; height: 16px; max-width: none;
+  color: var(--bai-blue);
+  pointer-events: none;
+}
+
+/* option list — scrolls once it gets long, as in the Figma */
+.bai-filter-list {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  max-height: 230px;
+  overflow-y: auto;
+  scrollbar-width: thin;
+}
+.bai-filter-list label {
+  display: flex;
+  align-items: center;
+  gap: var(--bai-space-2);
+  padding: .4rem 0;
+  font-size: 1rem;
+  font-weight: 300;
+  color: var(--bai-primary);
+  cursor: pointer;
+}
+.bai-filter-list label > span { flex: 1 1 auto; }
+.bai-filter-list .bai-filter-list__n {
+  font-size: .875rem;
+  font-weight: 300;
+  color: var(--bai-neutral-300);
+}
+/* checked options are underlined in the Figma */
+.bai-filter-list input:checked ~ span { text-decoration: underline; }
+
+.bai-filter-list input[type="checkbox"] {
+  position: static;
+  opacity: 1;
+  -webkit-appearance: checkbox;
+          appearance: auto;
+  width: 18px;
+  height: 18px;
+  margin: 0;
+  flex: none;
+  accent-color: var(--bai-blue);
+}
+
+.bai-filter-apply {
+  display: block;
+  width: 100%;
+  margin-top: var(--bai-space-4);
+  padding: .75rem 1rem;
+  font-family: inherit;
+  font-size: 1rem;
+  font-weight: 700;
+  color: #fff;
+  background: var(--bai-grad-action);
+  border: 0;
+  border-radius: var(--bai-radius-sm);
+  cursor: pointer;
+  transition: filter .2s var(--bai-ease);
+}
+.bai-filter-apply:hover { filter: brightness(1.12); }
+
+/* --- mobile: funnel trigger, panel expands inline -------------------------
+   The Figma component grows 70px -> 783px when opened rather than overlaying,
+   so the panel is in normal flow here and pushes the archive down. */
+@media (max-width: 767.98px) {
+  .bai-filters { flex-direction: row; align-items: center; gap: var(--bai-space-2); flex-wrap: wrap; }
+  .bai-filter { display: none; }
+  .bai-filter-icon { display: inline-flex; }
+  /* display:contents lets the panel become a flex sibling of the search, but
+     it also removes the wrapper as a containing block — so the panel has to
+     establish its own, or the absolutely positioned close button escapes. */
+  .bai-filter-wrap { position: static; display: contents; }
+  .bai-filter-panel {
+    position: relative;
+    order: 3;
+    width: 100%;
+    margin-top: var(--bai-space-3);
+    box-shadow: none;
+    border-color: var(--bai-neutral-200);
+  }
+  .bai-filter-list { max-height: 260px; }
 }
 
 /* --- pagination (presentational) ----------------------------------------- */
@@ -1653,8 +1872,6 @@ html.bai-motion .bai-feature[data-reveal-item] { --bai-reveal-y: 24px; }
 }
 
 @media (max-width: 767.98px) {
-  .bai-filters { flex-direction: column; align-items: stretch; }
-  .bai-filter { justify-content: center; }
   .bai-author { grid-template-columns: minmax(0, 1fr); gap: var(--bai-space-4); }
   .bai-author__portrait { max-width: 220px; }
   .bai-pagination { flex-wrap: wrap; }
