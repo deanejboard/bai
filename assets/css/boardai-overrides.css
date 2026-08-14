@@ -921,10 +921,11 @@ button.bai-tile__play svg { display: block; width: 100%; height: 100%; }
   transition: opacity .25s var(--bai-ease);
 }
 .bai-footer__link:hover { color: var(--bai-primary); opacity: var(--bai-hover-fade); }
-/* English only — the language selector was removed, so the copyright takes the
-   space it used to occupy and the socials stay right-aligned. */
+/* English only — the language selector was removed. The copyright still spans
+   the two MIDDLE columns so it centres on the row; spanning 1/4 instead would
+   centre it at 37.5% and pull it visibly left of the page centre. */
 .bai-footer__copy {
-  grid-column: 1 / 4;
+  grid-column: 2 / 4;
   justify-self: center;
   font-size: 1rem;
   font-weight: 300;
@@ -1114,10 +1115,15 @@ html.bai-motion .bai-feature[data-reveal-item] { --bai-reveal-y: 24px; }
 .bai-search input::placeholder { color: var(--bai-neutral-400); }
 .bai-search input:focus { outline: 2px solid var(--bai-light-blue); outline-offset: 1px; }
 .bai-search button {
+  /* Anchored to the BOTTOM edge only, with an explicit height.
+     The theme adds margin-top to form inputs, so the relatively positioned
+     wrapper is taller than the field at the top — anchoring to the top (or
+     to 50%) inherits that error and the button rides high. The wrapper's
+     bottom edge does coincide with the field's, so 4px up from there puts a
+     38px button dead centre in the 46px field, whatever the theme does above. */
   position: absolute;
-  top: 50%;
+  bottom: 4px;
   right: 4px;
-  transform: translateY(-50%);
   display: inline-flex;
   align-items: center;
   justify-content: center;
