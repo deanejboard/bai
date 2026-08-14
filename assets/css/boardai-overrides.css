@@ -957,20 +957,18 @@ button.bai-tile__play svg { display: block; width: 100%; height: 100%; }
 }
 
 @media (max-width: 991.98px) {
-  /* Tablet keeps all three cards on one row — ElevenLabs holds a 3-across card
-     row at 834px with a 16px gap, and the staggered trio is the strongest part
-     of this hero. The stagger flattens and the tiles equalise to portrait so
-     the row reads as a set. */
+  /* Tablet keeps all three cards on one row AND keeps the stagger. Three equal
+     cards in a line reads flat; the varied heights and vertical offsets are
+     what make the composition interesting (the ElevenLabs tablet mosaic works
+     the same way). So hold the Figma's column proportions and scale the offset
+     with the container instead of zeroing it. */
   .bai-bento {
-    grid-template-columns: repeat(3, minmax(0, 1fr));
-    gap: var(--bai-space-3);
+    grid-template-columns: 223fr 380fr 301fr;
+    gap: 11px;
     max-width: none;
-    align-items: stretch;
+    align-items: start;
   }
-  .bai-bento__cell { display: flex; }
-  .bai-bento__cell > .bai-tile { width: 100%; }
-  .bai-bento__cell:nth-child(3) { padding-top: 0; }
-  .bai-tile--r1, .bai-tile--r2, .bai-tile--r3 { aspect-ratio: 3 / 4; }
+  .bai-bento__cell:nth-child(3) { padding-top: 10%; }
 
   .bai-feed { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: var(--bai-space-4); }
 
@@ -1116,6 +1114,9 @@ html.bai-motion .bai-feature[data-reveal-item] { --bai-reveal-y: 24px; }
   border-radius: var(--bai-radius-pill);
 }
 .bai-search input::placeholder { color: var(--bai-neutral-400); }
+/* The theme adds margin-top to form inputs, which pushes the field 5px below
+   the filter pill on the same row. Needs >= 2 classes to beat it. */
+.bai-search input[type="search"] { margin: 0; }
 .bai-search input:focus { outline: 2px solid var(--bai-light-blue); outline-offset: 1px; }
 .bai-search button {
   /* Anchored to the BOTTOM edge only, with an explicit height.
@@ -1164,7 +1165,8 @@ html.bai-motion .bai-feature[data-reveal-item] { --bai-reveal-y: 24px; }
   display: inline-flex;
   align-items: center;
   gap: var(--bai-space-2);
-  height: 42px;
+  /* must match .bai-search input — they sit on the same row */
+  height: 46px;
   padding: 0 1.25rem;
   font-family: inherit;
   font-size: 1rem;
@@ -1598,6 +1600,12 @@ html.bai-motion .bai-feature[data-reveal-item] { --bai-reveal-y: 24px; }
 
 .bai-post-hero__title { margin-bottom: var(--bai-space-4); }
 .bai-post-hero__standfirst { color: rgba(255, 255, 255, .82); }
+
+/* the byline is a link to the author page */
+.bai-byline { transition: opacity .25s var(--bai-ease); }
+.bai-byline:hover { opacity: var(--bai-hover-fade); }
+.bai-aside__title a { transition: opacity .25s var(--bai-ease); }
+.bai-aside__title a:hover { opacity: var(--bai-hover-fade); }
 
 .bai-byline {
   display: flex;
