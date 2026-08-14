@@ -1067,7 +1067,27 @@ html.bai-motion .bai-feature[data-reveal-item] { --bai-reveal-y: 24px; }
 .bai-hero--sm::before { background-size: 100% 100%; }
 .bai-hero--sm .bai-hero__inner { max-width: 779px; margin-inline: 0; text-align: left; }
 
-/* --- breadcrumbs (theme: .breadcrumbs / .breadcrumb-separator) ------------ */
+/* --- breadcrumbs (theme: .breadcrumbs / .breadcrumb-separator) ------------
+   Breadcrumb Revamp Project rules:
+     * two-level trails are not rendered at all (see breadcrumbs() in
+       build_pages.py) — "Home / X" is not a breadcrumb;
+     * long labels truncate with an ellipsis rather than wrapping;
+     * below 768px the whole trail is replaced by a single "Back to <parent>",
+       which points at the immediate parent, not Home.
+   -------------------------------------------------------------------------- */
+.bai-breadcrumb-back { display: none; }
+
+/* desktop: truncate long labels instead of wrapping the trail */
+.bai-breadcrumbs li { min-width: 0; }
+.bai-breadcrumbs__label {
+  display: inline-block;
+  max-width: 300px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  vertical-align: bottom;
+}
+
 .bai-breadcrumbs {
   display: flex;
   flex-wrap: wrap;
@@ -1086,6 +1106,24 @@ html.bai-motion .bai-feature[data-reveal-item] { --bai-reveal-y: 24px; }
 .bai-breadcrumbs li { display: inline-flex; align-items: center; gap: .5rem; }
 .bai-breadcrumbs svg { opacity: .6; }
 .bai-breadcrumbs [aria-current] { color: #fff; }
+
+@media (max-width: 767.98px) {
+  .bai-breadcrumbs { display: none; }
+  .bai-breadcrumb-back {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--bai-space-2);
+    margin-bottom: 1.5rem;
+    font-size: 1rem;
+    line-height: 1.5rem;
+    font-weight: 400;
+    color: #fff;
+    transition: opacity .25s var(--bai-ease);
+  }
+  .bai-breadcrumb-back:hover { color: #fff; opacity: var(--bai-hover-fade); }
+  .bai-breadcrumb-back svg { flex: none; max-width: none; }
+}
+
 
 /* --- search + topic filter (presentational) ------------------------------- */
 .bai-filters {
