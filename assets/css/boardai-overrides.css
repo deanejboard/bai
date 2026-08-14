@@ -36,8 +36,12 @@
 
   --bai-neutral-50:    #e9ebf8;
   --bai-neutral-200:   #b4b8c6;
+  /* neutral-300 is an ON-DARK token only: 5.99:1 on --bai-blue-900, but just
+     2.87:1 on white. Never use it for text on a light background. */
   --bai-neutral-300:   #9298ad;
-  --bai-neutral-400:   #7d849d;
+  /* Figma specifies #7d849d, which is 3.71:1 on white and fails WCAG 2.2 AA
+     (1.4.3) for body text. Darkened along the same hue/saturation to 4.84:1. */
+  --bai-neutral-400:   #69718c;
   --bai-neutral-700:   #41485e;
   --bai-shade-50:      #f2f2f2;
   --bai-shade-100:     #d8d8d8;
@@ -135,7 +139,11 @@ body {
   color: var(--bai-primary);
   background: #fff;
   -webkit-font-smoothing: antialiased;
-  overflow-x: hidden;
+  /* `clip`, not `hidden`. Both stop the full-bleed 100vw elements causing a
+     horizontal scrollbar, but `overflow-x: hidden` makes the body a scroll
+     container, which silently re-anchors `position: sticky` descendants (the
+     article sidebar) away from the viewport. `clip` does not. */
+  overflow-x: clip;
 }
 
 h1, h2, h3, h4, h5, h6 { margin: 0; font-weight: 700; }
@@ -250,10 +258,11 @@ img, svg { max-width: 100%; }
   transition: background-color .2s var(--bai-ease), color .2s var(--bai-ease),
               border-color .2s var(--bai-ease), transform .2s var(--bai-ease);
 }
-.bai-btn:focus-visible {
-  outline: 2px solid var(--bai-light-blue);
-  outline-offset: 2px;
-}
+.bai-header .bai-btn--light { min-width: 160px; }   /* was an inline style */
+.bai-sprite { position: absolute; }                 /* was an inline style */
+
+/* Superseded by the two-tone ring in section 19; --bai-light-blue is only
+   2.15:1 on white and failed WCAG 1.4.11. */
 .bai-btn svg { flex: none; }
 
 /* white pill on dark — nav "Contact Board", pre-footer CTA */
@@ -902,13 +911,22 @@ button.bai-tile__play svg { display: block; width: 100%; height: 100%; }
   color: #fff;
   overflow: hidden;
 }
+/* Was two 1440x350 PNGs totalling 244KB. Both were fully opaque, so the mesh
+   (listed first, therefore painted on top) completely hid the waves layer
+   underneath — 56KB downloaded on every page load and never seen.
+
+   The mesh is three soft blobs over a vertical gradient, which is what
+   radial-gradient is for. These stops were fitted numerically against the
+   original PNG: mean error 1.55/255 (0.6%), worst case 14/255. Zero bytes,
+   and it stays smooth at any width instead of upscaling from 1440px. */
 .bai-prefooter__bg {
   position: absolute;
   inset: 0;
-  background-image: url("../img/prefooter-mesh.png"), url("../img/prefooter-waves.png");
-  background-repeat: no-repeat, no-repeat;
-  background-position: center, center;
-  background-size: cover, cover;
+  background:
+    radial-gradient(33.1% 128.7% at 70.7% 60.6%, rgba(84, 0, 109, .563) 0%, rgba(84, 0, 109, 0) 100%),
+    radial-gradient(45.0% 101.7% at 77.1% 60.7%, rgba(52, 133, 198, .644) 0%, rgba(52, 133, 198, 0) 100%),
+    radial-gradient(40.8% 92.4% at 53.2% 65.4%, rgba(136, 154, 172, .345) 0%, rgba(136, 154, 172, 0) 100%),
+    linear-gradient(180deg, #101935 0%, #240f4b 100%);
   /* The shading ran all the way to the top edge and collided with the wave
      divider instead of blending under it. Fade it in so the top of the
      section is clean navy where the wave lands. */
@@ -1410,7 +1428,8 @@ html.bai-motion .bai-feature[data-reveal-item] { --bai-reveal-y: 24px; }
   font-size: .75rem;
   font-weight: 700;
   color: #fff;
-  background: var(--bai-neutral-300);
+  /* white on neutral-300 is 2.87:1; neutral-700 is 9.08:1 (WCAG 2.2 AA 1.4.3) */
+  background: var(--bai-neutral-700);
   border-radius: 999px;
 }
 .bai-filter-group__count[hidden] { display: none; }
@@ -1466,7 +1485,8 @@ html.bai-motion .bai-feature[data-reveal-item] { --bai-reveal-y: 24px; }
 .bai-filter-list .bai-filter-list__n {
   font-size: .875rem;
   font-weight: 300;
-  color: var(--bai-neutral-300);
+  /* on white: neutral-400, not the on-dark neutral-300 */
+  color: var(--bai-neutral-400);
 }
 /* checked options are underlined in the Figma */
 .bai-filter-list input:checked ~ span { text-decoration: underline; }
@@ -1891,7 +1911,11 @@ html.bai-motion .bai-feature[data-reveal-item] { --bai-reveal-y: 24px; }
      * the stage wraps ONLY the player, so 55.9% resolves against the player's
        own height rather than player-plus-accordion;
      * the white is full-bleed (100vw), not container width — otherwise the
-       hero's dark keeps showing in strips either side of the player. */
+       hero's dark keeps showing in strips either side of the player.
+
+   100vw includes the scrollbar, so this deliberately overshoots by the
+   scrollbar width and is clipped by `overflow-x: clip` on body. That is the
+   containment, not a happy accident — do not remove it from body. */
 .bai-video-hero { padding-bottom: 0; }
 .bai-video-hero .bai-post-hero__inner { max-width: 1000px; }
 .bai-video-stage { position: relative; z-index: 2; margin-top: var(--bai-space-5); }
@@ -2040,3 +2064,116 @@ html.bai-motion .bai-feature[data-reveal-item] { --bai-reveal-y: 24px; }
   .bai-post-meta > * + *::before { display: none; }
   .bai-video-stage::after { top: 50%; }
 }
+
+/* ==========================================================================
+   19. Accessibility — WCAG 2.2 AA
+   --------------------------------------------------------------------------
+   Conformance notes for the implementing developer:
+
+   1.4.3  Contrast (Minimum) ....... --bai-neutral-400 darkened from Figma's
+                                     #7d849d (3.71:1) to #69718c (4.84:1).
+                                     --bai-neutral-300 is on-dark ONLY.
+   1.4.11 Non-text Contrast ........ two-tone focus ring, see below.
+   2.4.1  Bypass Blocks ............ .bai-skip skip-to-content link.
+   2.4.7  Focus Visible ............ universal :focus-visible baseline.
+   2.4.11 Focus Not Obscured ....... scroll-margin-top clears the sticky header.
+   2.5.8  Target Size (Minimum) .... 24x24 floor on all controls.
+   4.1.3  Status Messages .......... aria-live regions, see boardai.js.
+
+   Known exemption: the footer Board wordmark renders at 2.60:1 on
+   --bai-shade-100. WCAG exempts logotypes from 1.4.3/1.4.11, and this is a
+   deliberate de-emphasis, so it is left as designed.
+   ========================================================================== */
+
+/* --- Focus ring -----------------------------------------------------------
+   No single colour clears 3:1 against every surface this site uses (white,
+   #101a35, #16244a, #d8d8d8 and --bai-violet all appear behind focusable
+   elements). A two-tone ring is used instead: a white halo sits in the outline
+   offset and a near-black outline sits outside it, so whichever surface is
+   behind it, one of the two tones contrasts. */
+:root {
+  --bai-focus-dark:  #101a35;
+  --bai-focus-light: #ffffff;
+}
+
+:where(a, button, input, select, textarea, summary, [tabindex]):focus-visible {
+  outline: 2px solid var(--bai-focus-dark);
+  outline-offset: 2px;
+  /* board.com's theme carries a global `box-shadow: none !important`, which
+     silently strips the light half of the ring and leaves a dark-on-dark
+     indicator in the header, hero and mega panel. !important is the only way
+     to win it, and a focus indicator is the right place to spend one. */
+  box-shadow: 0 0 0 2px var(--bai-focus-light) !important;
+  border-radius: var(--bai-radius-sm);
+}
+/* pill and circular controls keep their own silhouette */
+:where(.bai-btn, .bai-chip, .bai-topic-chip, .bai-pagination a,
+       .bai-tags__list a, .bai-filter, .bai-search button):focus-visible {
+  border-radius: var(--bai-radius-pill);
+}
+:where(.bai-filter-panel__close, .bai-tile__play, .bai-video__play,
+       .bai-burger, .bai-chip__x):focus-visible {
+  border-radius: 50%;
+}
+:where(.bai-card, .bai-featured__card, .bai-tile, .bai-tile__link,
+       .bai-topic, .bai-dropdown__all):focus-visible {
+  border-radius: var(--bai-radius);
+}
+
+/* The theme's own focus styling on inputs used --bai-light-blue, which is only
+   2.15:1 on white and fails 1.4.11. Route them through the same ring. */
+.bai-search input:focus-visible,
+.bai-filter-search input:focus-visible {
+  outline: 2px solid var(--bai-focus-dark);
+  outline-offset: 2px;
+  box-shadow: 0 0 0 2px var(--bai-focus-light) !important;   /* see note above */
+}
+
+/* --- 2.4.1 Bypass Blocks --------------------------------------------------
+   Every page opens with a 10-item mega menu; keyboard and switch users need a
+   way past it. Visually hidden until focused. */
+.bai-skip {
+  position: absolute;
+  top: var(--bai-space-2);
+  left: var(--bai-space-2);
+  z-index: 2000;
+  padding: .75rem 1.25rem;
+  font-size: 1rem;
+  font-weight: 700;
+  color: #fff;
+  background: var(--bai-blue-900);
+  border-radius: var(--bai-radius-pill);
+  transform: translateY(calc(-100% - var(--bai-space-2) - 8px));
+  transition: transform .2s var(--bai-ease);
+}
+.bai-skip:focus-visible { transform: translateY(0); color: #fff; }
+
+/* --- 2.4.11 Focus Not Obscured (Minimum) ----------------------------------
+   The header is sticky, so an element focused by keyboard can land underneath
+   it after the browser scrolls it into view. Reserve the header's height. */
+:where(a, button, input, select, textarea, summary, [tabindex], :target) {
+  scroll-margin-top: calc(var(--bai-header-h) + var(--bai-space-3));
+}
+
+/* --- 2.5.8 Target Size (Minimum) ------------------------------------------
+   24x24 CSS px floor. Links inside a sentence are exempt under the "inline"
+   exception, so prose and breadcrumbs are deliberately excluded. */
+:where(.bai-pagination a, .bai-pagination button, .bai-chip, .bai-chip__x,
+       .bai-active-filters__clear, .bai-filter-clear, .bai-footer__link,
+       .bai-drawer__link, .bai-nav__link) {
+  min-height: 24px;
+}
+/* The sidebar "From the author" link is a standalone heading link, not a link
+   inside a sentence, so the inline exception does not cover it. It renders at
+   20px on its own line; the padding takes it to 24. */
+.bai-aside__title a {
+  display: inline-block;
+  padding-block: 2px;
+}
+:where(.bai-chip__x, .bai-filter-panel__close, .bai-burger) {
+  min-width: 24px;
+  min-height: 24px;
+}
+
+/* Screen-reader-only text uses the existing .bai-visually-hidden utility
+   defined in section 8 — do not add a second one. */
