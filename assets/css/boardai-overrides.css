@@ -497,11 +497,37 @@ img, svg { max-width: 100%; }
 .bai-dropdown__grid .bai-topic:nth-child(4) { --dd-i: 4; }
 .bai-dropdown__grid .bai-topic:nth-child(5) { --dd-i: 5; }
 .bai-dropdown__grid .bai-topic:nth-child(6) { --dd-i: 6; }
+.bai-dropdown__all {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--bai-space-2);
+  margin-top: var(--bai-space-4);
+  font-size: 1rem;
+  font-weight: 700;
+  color: #fff;
+  transition: opacity .25s var(--bai-ease);
+}
+.bai-dropdown__all:hover { color: #fff; opacity: var(--bai-hover-fade); }
+.bai-dropdown__all svg { flex: none; max-width: none; }
+
 .bai-featured__card { --dd-i: 1; }
 
 @media (prefers-reduced-motion: reduce) {
   .bai-dropdown [data-dd-item] { opacity: 1 !important; transform: none !important; }
 }
+
+.bai-dropdown__all {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--bai-space-2);
+  margin-top: var(--bai-space-4);
+  font-size: 1rem;
+  font-weight: 700;
+  color: #fff;
+  transition: opacity .25s var(--bai-ease);
+}
+.bai-dropdown__all:hover { color: #fff; opacity: var(--bai-hover-fade); }
+.bai-dropdown__all svg { flex: none; max-width: none; }
 
 .bai-featured__card {
   position: relative;
@@ -883,6 +909,11 @@ button.bai-tile__play svg { display: block; width: 100%; height: 100%; }
   background-repeat: no-repeat, no-repeat;
   background-position: center, center;
   background-size: cover, cover;
+  /* The shading ran all the way to the top edge and collided with the wave
+     divider instead of blending under it. Fade it in so the top of the
+     section is clean navy where the wave lands. */
+  -webkit-mask-image: linear-gradient(180deg, transparent 0%, rgba(0,0,0,.55) 30%, #000 62%);
+          mask-image: linear-gradient(180deg, transparent 0%, rgba(0,0,0,.55) 30%, #000 62%);
 }
 .bai-prefooter__inner {
   position: relative;
