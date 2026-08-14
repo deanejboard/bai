@@ -1137,6 +1137,10 @@ html.bai-motion .bai-feature[data-reveal-item] { --bai-reveal-y: 24px; }
   border: 0;
   border-radius: 50%;
   cursor: pointer;
+  /* Shadow is violet-tinted, not neutral — sampled from the Figma, where the
+     halo under the button reads #f5effc on white == BoardViolet at ~8%.
+     (QA flagged the neutral shadow as wrong on the board.com build.) */
+  box-shadow: 0 6px 16px rgba(135, 57, 228, .30);
   /* gradients don't interpolate, so brighten rather than cross-fade */
   transition: filter .2s var(--bai-ease);
 }
@@ -1406,6 +1410,25 @@ html.bai-motion .bai-feature[data-reveal-item] { --bai-reveal-y: 24px; }
   flex: none;
   accent-color: var(--bai-blue);
 }
+
+/* QA #12 / #18: searching a group must report how many options matched, and
+   an empty result needs a state rather than a silently blank list. */
+.bai-filter-results {
+  margin: 0 0 var(--bai-space-2);
+  font-size: .8125rem;
+  font-weight: 300;
+  color: var(--bai-neutral-400);
+}
+.bai-filter-results[hidden] { display: none; }
+.bai-filter-empty {
+  padding: var(--bai-space-3) 0;
+  font-size: .875rem;
+  font-weight: 300;
+  color: var(--bai-neutral-400);
+  text-align: center;
+}
+.bai-filter-empty[hidden] { display: none; }
+.bai-filter-empty b { display: block; font-weight: 700; color: var(--bai-primary); margin-bottom: 2px; }
 
 .bai-filter-apply {
   display: block;
