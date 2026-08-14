@@ -1518,6 +1518,12 @@ html.bai-motion .bai-feature[data-reveal-item] { --bai-reveal-y: 24px; }
 }
 .bai-filter-apply:hover { filter: brightness(1.12); }
 
+/* Apply is a tablet/mobile affordance only. On desktop a tick commits
+   immediately, so a commit button would be redundant. */
+@media (min-width: 992px) {
+  .bai-filter-apply { display: none; }
+}
+
 /* --- mobile: funnel trigger, panel expands inline -------------------------
    The Figma component grows 70px -> 783px when opened rather than overlaying,
    so the panel is in normal flow here and pushes the archive down. */
@@ -1539,6 +1545,60 @@ html.bai-motion .bai-feature[data-reveal-item] { --bai-reveal-y: 24px; }
   }
   .bai-filter-list { max-height: 260px; }
 }
+
+/* --- applied filters, above the results ----------------------------------
+   Each applied filter is a dismissable chip, with a clear-all beside them.
+   Reflects the COMMITTED state, so on tablet/mobile it only changes on Apply. */
+.bai-active-filters {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--bai-space-2) var(--bai-space-3);
+  margin-top: var(--bai-space-4);
+}
+.bai-active-filters[hidden] { display: none; }
+.bai-active-filters__list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--bai-space-2);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.bai-active-filters__list button {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--bai-space-2);
+  height: 32px;
+  padding: 0 .75rem 0 1rem;
+  font-family: inherit;
+  font-size: .875rem;
+  font-weight: 700;
+  color: var(--bai-primary);
+  background: var(--bai-neutral-50);
+  border: 0;
+  border-radius: var(--bai-radius-pill);
+  cursor: pointer;
+  transition: background-color .2s var(--bai-ease);
+}
+.bai-active-filters__list button:hover { background: var(--bai-neutral-200); }
+.bai-active-filters__list svg { flex: none; max-width: none; opacity: .65; }
+.bai-active-filters__clear {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 0;
+  font-family: inherit;
+  font-size: .875rem;
+  font-weight: 700;
+  color: var(--bai-blue);
+  background: none;
+  border: 0;
+  cursor: pointer;
+  transition: opacity .25s var(--bai-ease);
+}
+.bai-active-filters__clear:hover { opacity: var(--bai-hover-fade); }
+.bai-active-filters__clear svg { flex: none; max-width: none; }
 
 /* --- pagination (presentational) ----------------------------------------- */
 .bai-pagination {
