@@ -1413,6 +1413,7 @@ html.bai-motion .bai-feature[data-reveal-item] { --bai-reveal-y: 24px; }
   background: var(--bai-neutral-300);
   border-radius: 999px;
 }
+.bai-filter-group__count[hidden] { display: none; }
 .bai-filter-group__body { padding: 0 var(--bai-space-3) var(--bai-space-3); }
 .bai-filter-group__body[hidden] { display: none; }
 
