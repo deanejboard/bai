@@ -1886,8 +1886,8 @@ html.bai-motion .bai-feature[data-reveal-item] { --bai-reveal-y: 24px; }
   transition: opacity .25s var(--bai-ease);
 }
 .bai-aside__list a:hover { opacity: var(--bai-hover-fade); }
-/* The circular icon button itself is defined once in section 20, shared with
-   the combined Share & Analyze row. */
+/* The circular icon button itself is defined in section 20, next to the AI
+   pills it sits above. */
 .bai-share { display: flex; gap: var(--bai-space-2); }
 
 /* ==========================================================================
