@@ -2171,13 +2171,9 @@ html.bai-motion .bai-feature[data-reveal-item] { --bai-reveal-y: 24px; }
 /* ==========================================================================
    20. Share & Analyze  (article sidebar)
    --------------------------------------------------------------------------
-   Two design options from the Figma, both rendered and toggled by
-   [data-share-option] on the .bai-aside so they can be compared live:
-
-     1  one combined "Share & Analyze" row, icon-only, social and AI
-        separated by a rule
-     2  two labelled sections: "Share on" icons, then "Analyze with AI"
-        as full-width pills
+   Two labelled sections: "Share on" as circular icon buttons, then
+   "Analyze with AI" as full-width pills. (A combined single-row variant was
+   prototyped alongside this and not taken.)
 
    The AI buttons deep-link to ChatGPT / Claude / Perplexity with the article
    URL pre-loaded into a prompt. Hrefs are built at runtime in boardai.js from
@@ -2196,31 +2192,8 @@ html.bai-motion .bai-feature[data-reveal-item] { --bai-reveal-y: 24px; }
   --bai-brand-perplexity: #1fb8cd;
 }
 
-/* only one option is visible at a time */
-.bai-aside[data-share-option="1"] .bai-shareopt--2,
-.bai-aside[data-share-option="2"] .bai-shareopt--1 { display: none; }
-
-/* --- option 1: one combined icon row ------------------------------------- */
-/* Six 28px buttons plus the rule have to sit on ONE line inside the 220px
-   sidebar column: 6x28 + 5x6 gaps + 1 + 2x3 = 205px. Widening the gap or the
-   buttons wraps Perplexity onto a second row and the set stops reading as one
-   control, so these numbers are load-bearing. */
-.bai-sharebar {
-  display: flex;
-  align-items: center;
-  gap: 6px;
-}
-.bai-sharebar__sep {
-  width: 1px;
-  height: 20px;
-  margin-inline: 3px;
-  background: var(--bai-neutral-200);
-  flex: none;
-}
-
-/* --- shared circular icon button (both options) -------------------------- */
-.bai-share a,
-.bai-sharebar a {
+/* --- circular icon button ------------------------------------------------- */
+.bai-share a {
   display: inline-flex;
   align-items: center;
   justify-content: center;
@@ -2232,18 +2205,17 @@ html.bai-motion .bai-feature[data-reveal-item] { --bai-reveal-y: 24px; }
   transition: color .2s var(--bai-ease), border-color .2s var(--bai-ease),
               background-color .2s var(--bai-ease);
 }
-.bai-share a:hover,
-.bai-sharebar a:hover {
+.bai-share a:hover {
   color: var(--bai-brand, var(--bai-primary));
   border-color: currentColor;
   background: #fff;
 }
 
-/* A second section header inside an option (the "Analyze with AI" one) needs
-   the same gap above it that .bai-aside__list gives the first. */
-.bai-shareopt .bai-share + .bai-aside__title { margin-top: var(--bai-space-5); }
+/* The "Analyze with AI" header needs the same gap above it that
+   .bai-aside__list gives the "Share on" one. */
+.bai-share + .bai-aside__title { margin-top: var(--bai-space-5); }
 
-/* --- option 2: AI pills --------------------------------------------------- */
+/* --- AI pills ------------------------------------------------------------ */
 .bai-ai-pills { display: grid; gap: var(--bai-space-2); }
 .bai-ai-pill {
   display: flex;
@@ -2277,48 +2249,5 @@ html.bai-motion .bai-feature[data-reveal-item] { --bai-reveal-y: 24px; }
 [data-ai="claude"]        { --bai-brand: var(--bai-brand-claude); }
 [data-ai="perplexity"]    { --bai-brand: var(--bai-brand-perplexity); }
 
-/* the two icon-only AI buttons in option 1 read as a set with the socials but
-   want a touch more presence, since they are the new thing being demoed */
-.bai-sharebar a[data-ai] { border-color: var(--bai-neutral-300); }
-
-/* --- prototype-only: the option switcher --------------------------------- */
-/* Sits above the hero-format switcher rather than beside it, so the two
-   floating controls never overlap. Review device, not a feature. */
-.bai-opt-switch {
-  position: fixed;
-  left: 16px;
-  bottom: 64px;
-  z-index: 1200;
-  display: flex;
-  align-items: center;
-  gap: 4px;
-  padding: 6px;
-  background: rgba(16, 26, 53, .9);
-  border: 1px solid rgba(255, 255, 255, .18);
-  border-radius: var(--bai-radius-pill);
-  backdrop-filter: blur(6px);
-}
-.bai-opt-switch__label {
-  padding-left: .5rem;
-  font-size: .6875rem;
-  font-weight: 700;
-  letter-spacing: .06em;
-  text-transform: uppercase;
-  color: rgba(255, 255, 255, .55);
-}
-.bai-opt-switch button {
-  padding: .4rem .8rem;
-  font-family: inherit;
-  font-size: .8125rem;
-  font-weight: 700;
-  color: rgba(255, 255, 255, .7);
-  background: none;
-  border: 0;
-  border-radius: var(--bai-radius-pill);
-  cursor: pointer;
-}
-.bai-opt-switch button[aria-pressed="true"] { color: var(--bai-primary); background: #fff; }
-
-/* focus rings for the new controls (section 19 keys off these class lists) */
-:where(.bai-sharebar a, .bai-opt-switch button):focus-visible { border-radius: var(--bai-radius-pill); }
+/* focus ring silhouette for the new controls (section 19 supplies the ring) */
 :where(.bai-ai-pill):focus-visible { border-radius: var(--bai-radius-pill); }
