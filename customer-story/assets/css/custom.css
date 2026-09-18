@@ -265,8 +265,10 @@
 
 /* ==========================================================================
    OPTION B — Folio
-   Editorial register built entirely in Mulish. The display voice is
-   Mulish 200 at large sizes rather than a second typeface.
+   Editorial register built entirely in Mulish, at Board's own weights.
+   Nothing here differentiates by typeface or by weight — the difference is
+   structural: asymmetric margins, marginalia, hairline rules, numbered
+   chapters, full-bleed plates and a typeset figure table.
    ========================================================================== */
 .fo{ --fo-hair:#cdd3e2; }
 .fo .fo-pad{padding-inline:clamp(1.5rem,6vw,5.75rem)}
@@ -286,11 +288,11 @@
   color:var(--cs-muted);margin-bottom:clamp(1.25rem,3vw,2.125rem);
 }
 .fo-hero h1{
-  font-size:clamp(2.5rem,7.6vw,5.75rem);
-  line-height:1.02;
-  font-weight:200;
-  letter-spacing:-.035em;
-  max-width:18ch;
+  font-size:clamp(2.25rem,5.6vw,4.25rem);
+  line-height:1.06;
+  font-weight:700;
+  letter-spacing:-.03em;
+  max-width:20ch;
   margin:0;
 }
 .fo-hero h1 em{font-style:normal;font-weight:400;color:var(--cs-violet)}
@@ -319,7 +321,7 @@
   display:flex;align-items:baseline;justify-content:space-between;gap:1.25rem;flex-wrap:wrap;
   padding-bottom:1rem;border-bottom:1px solid var(--cs-navy);
 }
-.fo-sum__head h2{font-weight:200;letter-spacing:-.025em;margin:0}
+.fo-sum__head h2{font-weight:700;letter-spacing:-.02em;margin:0;font-size:clamp(1.5rem,2.6vw,1.875rem)}
 .fo-entry{
   display:grid;grid-template-columns:clamp(8rem,17vw,12.5rem) minmax(0,1fr);
   gap:clamp(1rem,3vw,2.75rem);padding-block:clamp(1.25rem,2.6vw,1.875rem);
@@ -344,7 +346,7 @@
 .fo-figrow__lbl{font-size:.6875rem;font-weight:700;letter-spacing:.13em;text-transform:uppercase;color:var(--cs-muted)}
 .fo-figrow__desc{margin:0;font-size:1rem;line-height:1.5;font-weight:300}
 .fo-figrow__val{
-  font-size:clamp(2.125rem,5.4vw,3.875rem);line-height:.94;font-weight:200;letter-spacing:-.04em;
+  font-size:clamp(2rem,4.6vw,3.25rem);line-height:.98;font-weight:800;letter-spacing:-.035em;
   font-variant-numeric:tabular-nums;white-space:nowrap;color:var(--cs-navy);
 }
 .fo-figrow__val i{font-style:normal;font-weight:400;color:var(--cs-violet);font-size:.5em}
@@ -359,8 +361,8 @@
   color:var(--cs-violet);padding-top:.625rem;
 }
 .fo-chap__head h2{
-  font-weight:200;letter-spacing:-.03em;line-height:1.05;max-width:20ch;margin:0;
-  font-size:clamp(1.75rem,4.2vw,3.25rem);
+  font-weight:700;letter-spacing:-.025em;line-height:1.1;max-width:22ch;margin:0;
+  font-size:clamp(1.625rem,3.2vw,2.5rem);
 }
 .fo-grid{
   display:grid;grid-template-columns:clamp(8rem,17vw,12.5rem) minmax(0,1fr);
@@ -386,13 +388,13 @@
 .fo-hang__n{font-size:.75rem;font-weight:700;color:var(--cs-muted);padding-top:.25rem;font-variant-numeric:tabular-nums}
 .fo-hang p{margin:0;font-size:1rem;line-height:1.5}
 .fo-hang--lessons li{grid-template-columns:3.25rem minmax(0,1fr);padding-block:1.25rem}
-.fo-hang--lessons .fo-hang__n{font-size:2rem;font-weight:200;color:var(--cs-violet);letter-spacing:-.04em;line-height:.9;padding-top:0}
+.fo-hang--lessons .fo-hang__n{font-size:1.75rem;font-weight:800;color:var(--cs-violet);letter-spacing:-.035em;line-height:1;padding-top:0;font-variant-numeric:tabular-nums}
 .fo-hang--lessons b{display:block;font-size:1.0625rem;font-weight:700;letter-spacing:-.012em;margin-bottom:.375rem}
 
 .fo-quote{padding-block:clamp(2.5rem,6vw,5.375rem);border-top:1px solid var(--cs-navy)}
 .fo-quote blockquote{
-  margin:0;font-size:clamp(1.5rem,4.2vw,2.875rem);line-height:1.16;font-weight:200;
-  letter-spacing:-.03em;max-width:22ch;color:var(--cs-navy);
+  margin:0;font-size:clamp(1.375rem,2.9vw,2.125rem);line-height:1.25;font-weight:700;
+  letter-spacing:-.022em;max-width:26ch;color:var(--cs-navy);
 }
 .fo-quote__attr{display:flex;gap:1rem;align-items:center;margin-top:clamp(1.375rem,3vw,2.25rem)}
 .fo-quote__attr img{width:3.25rem;height:3.25rem;border-radius:50%;object-fit:cover;flex:none}
@@ -413,19 +415,24 @@
 .fo-rel{padding-block:clamp(2.125rem,5vw,3.75rem);border-top:1px solid var(--fo-hair)}
 .fo-rel-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(13.5rem,1fr));gap:clamp(1.25rem,3vw,2.5rem);margin-top:1.625rem}
 .fo-rel-grid a{display:block;border-top:1px solid var(--cs-navy);padding-top:.875rem;text-decoration:none}
-.fo-rel-grid img{height:1.75rem;width:auto;margin-bottom:.875rem;display:block}
+.fo-rel-grid .fo-rel__logo{
+  height:2rem;display:flex;align-items:center;margin-bottom:1rem;
+}
+.fo-rel-grid .fo-rel__logo img{
+  max-height:100%;max-width:7.5rem;width:auto;height:auto;object-fit:contain;display:block;
+}
 .fo-rel-grid .lbl{
   display:block;font-size:.6875rem;font-weight:700;letter-spacing:.14em;text-transform:uppercase;
   color:var(--cs-muted);margin-bottom:.625rem;
 }
-.fo-rel-grid h4{font-size:1.1875rem;line-height:1.2;font-weight:300;letter-spacing:-.015em;margin:0;color:var(--cs-navy)}
+.fo-rel-grid h4{font-size:1.0625rem;line-height:1.4;font-weight:700;letter-spacing:-.012em;margin:0;color:var(--cs-navy)}
 .fo-rel-grid a:hover h4{color:var(--cs-violet)}
 
 .fo-cta{
   padding-block:clamp(2.875rem,7vw,6rem);border-top:1px solid var(--cs-navy);
   display:flex;justify-content:space-between;align-items:flex-end;gap:1.75rem;flex-wrap:wrap;
 }
-.fo-cta h2{font-weight:200;letter-spacing:-.03em;line-height:1.02;max-width:15ch;margin:0;font-size:clamp(1.875rem,5.2vw,3.75rem)}
+.fo-cta h2{font-weight:700;letter-spacing:-.025em;line-height:1.08;max-width:17ch;margin:0;font-size:clamp(1.75rem,3.6vw,2.75rem)}
 .fo-cta p{margin:.875rem 0 0;font-size:1rem;font-weight:300;max-width:34ch}
 
 @media (max-width:767.98px){
@@ -559,11 +566,44 @@ body.show-anno .anno-tag{
 .fo-text h3{font-weight:400;font-size:1.4375rem;margin:1.625rem 0 .625rem}
 .fo-text h3:first-child{margin-top:0}
 
-/* card--testimonial carries decorative bubbles that bleed outside the card;
-   give them room and keep chapter copy above them */
-.cs-chapters .card--testimonial{position:relative;z-index:1;margin-block:2.5rem}
+/* ---- compact testimonial, for use inside the reading column ----
+   The stock card--testimonial is a wide two-column block: a 16.4rem centred
+   portrait column whose ::before paints a decorative bubble 310px to the left
+   and 240px above the card, then the quote beside it. At full container width
+   that is the right component; dropped into a 68ch reading column it centres
+   the attribution, pushes the quote to a narrow track and bleeds its bubble
+   over the margin notes.
+
+   This variant reuses Board's own compact attribution pattern —
+   .testimonial-info-bottom, already in the theme — and stacks it under the
+   quote: quote first, then a round portrait in a row with the name. Same
+   gradient border, same quote mark, same type. Layout only. */
+.cs-testimonial{
+  flex-direction:column;
+  gap:1.5rem;
+  padding:2rem;
+  border-width:.25rem;
+  margin-block:.5rem;
+}
+.cs-testimonial .testimonial-quote{flex:1 1 auto;min-width:0}
+.cs-testimonial .testimonial-quote__wrap{padding:2.75rem 0 0}
+.cs-testimonial .testimonial-quote__wrap p{
+  margin:0;font-size:1.25rem;line-height:1.875rem;font-weight:300;color:var(--cs-navy);
+}
+.cs-testimonial .testimonial-info-bottom{
+  flex-direction:row;align-items:center;gap:1rem;margin-top:0;
+  padding-top:1.25rem;border-top:1px solid var(--cs-line);
+}
+.cs-testimonial .testimonial-info-bottom .testimonial-img{width:3.5rem;height:3.5rem}
+.cs-testimonial .testimonial-data{gap:.125rem}
+.cs-testimonial .testimonial-job-info{display:flex;flex-direction:column}
+
+/* the stock block still appears at full container width (Why this story
+   matters), where its own layout is correct — just keep chapter copy above
+   any decoration that bleeds out of it */
 .cs-chapter,.cs-withnotes{position:relative;z-index:2}
 .cs-notes{position:relative;z-index:3}
+.card--testimonial{position:relative;z-index:1}
 
 /* unit marks were reading as punctuation at .42em */
 .cs-figure__val .u{font-size:.5em}
