@@ -1,4 +1,4 @@
-# Board Newsroom lo-fi, internal preview
+# Board Newsroom prototype, internal preview
 
 Password-protected. The page is AES-256-GCM encrypted (PBKDF2-SHA256, 310k iterations).
 
